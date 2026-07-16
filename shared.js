@@ -65,7 +65,7 @@
                 <div>&copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.</div>
                 <div class="flex items-center space-x-2">
                     <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.2-routing-fix</span>
+                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.3-routing-fix</span>
                 </div>
             </div>
         </footer>`;
@@ -81,13 +81,11 @@
             let targetViewFile = './views/dashboard.html';
 
             // Specific sub-routes MUST check first to avoid being swallowed by generic matching
-            if (rawHash === '#/safety/create' || rawHash.startsWith('#/safety/create')) {
-                targetViewFile = './views/safety-create.html';
-            } else if (rawHash === '#/safety' || rawHash.startsWith('#/safety')) {
-                targetViewFile = './views/safety.html';
-            } else if (rawHash !== '#/' && rawHash !== '') {
-                targetViewFile = './views/404.html'; 
-            }
+            if (rawHash.startsWith('#/safety')) {
+    targetViewFile = './views/safety.html';
+} else if (rawHash !== '#/' && rawHash !== '') {
+    targetViewFile = './views/404.html'; 
+}
 
             // Fetch the fragment text over the network and drop it in the app container
             setTimeout(async () => {
