@@ -1,0 +1,51 @@
+<!-- Back Button with Hash Route -->
+<div class="mb-6">
+    <a href="#/" class="inline-flex items-center text-sm font-semibold text-slate-400 hover:text-aviationRed transition-colors group">
+        <i class="fa-solid fa-arrow-left mr-2 transform group-hover:-translate-x-1 transition-transform"></i>
+        Back to Dashboard
+    </a>
+</div>
+
+<div class="mb-8">
+    <h1 class="text-3xl font-extrabold text-white tracking-tight">Safety Management System (SMS)</h1>
+    <p class="text-slate-400 mt-1">Submit digital hazard logs, track fleet safety filings, and review active operational safety memos.</p>
+</div>
+
+<!-- The 3 Safety Module Options Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <a href="#/safety/create" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200">
+        <div class="flex items-center space-x-4">
+            <div class="p-3 bg-red-950/50 text-aviationRed rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
+                <i class="fa-solid fa-file-circle-plus text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-aviationRed transition-colors leading-tight">Create Report</h3>
+        </div>
+        <p class="text-sm text-slate-400 mt-4">File a new flight hazard, cabin incident, bird strike, or maintenance safety log.</p>
+    </a>
+
+    <a href="#/safety/all" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200">
+        <div class="flex items-center space-x-4">
+            <div class="p-3 bg-blue-950/50 text-blue-400 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
+                <i class="fa-solid fa-list-check text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-aviationRed transition-colors leading-tight">All Reports</h3>
+        </div>
+        <p class="text-sm text-slate-400 mt-4">Review historical and pending safety filings submitted across the fleet operations.</p>
+    </a>
+
+    <a href="#/safety/memos" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200">
+        <div class="flex items-center space-x-4">
+            <div class="p-3 bg-amber-950/50 text-amber-400 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
+                <i class="fa-solid fa-bullhorn text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white group-hover:text-aviationRed transition-colors leading-tight">Safety Memos</h3>
+        </div>
+        <p class="text-sm text-slate-400 mt-4">Read active safety directives, bird activity reports, and seasonal base memos.</p>
+    </a>
+</div>
+
+<!-- Content Placeholder (where details will render) -->
+<div id="safety-content" class="bg-aviationCard rounded-xl border border-aviationBorder p-8 shadow-lg text-center text-slate-500">
+    <i class="fa-solid fa-arrow-pointer text-3xl text-slate-600 mb-3 block"></i>
+    <p class="text-base font-semibold text-slate-400">Select a safety framework module above to display layout.</p>
+</div>
