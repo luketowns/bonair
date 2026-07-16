@@ -27,37 +27,42 @@
                                 <i class="fa-solid fa-file-shield"></i>
                             </div>
                             <div class="text-left">
-                                <p class="text-sm font-bold">Create Report</p>
+                                <p class="text-sm font-bold">Create New Report</p>
                                 <p class="text-xs text-slate-500">File a hazard or incident</p>
                             </div>
                         </div>
                         <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
                     </a>
 
-                    <!-- Placeholder Modules for Future Construction -->
-                    <div class="opacity-60 cursor-not-allowed flex items-center justify-between p-4 rounded-lg bg-slate-900/40 border border-slate-800/80 text-slate-500">
+                    <!-- View Reports Link -->
+                    <a href="#/safety/view" id="nav-safety-view"
+                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
                         <div class="flex items-center space-x-3">
-                            <div class="h-9 w-9 rounded-md bg-slate-800 flex items-center justify-center text-slate-600">
-                                <i class="fa-solid fa-chart-line"></i>
+                            <div class="h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors">
+                                <i class="fa-solid fa-list-check"></i>
                             </div>
                             <div class="text-left">
-                                <p class="text-sm font-bold">Safety Analytics</p>
-                                <p class="text-xs text-slate-600">Risk trends & dashboard</p>
+                                <p class="text-sm font-bold">View Reports</p>
+                                <p class="text-xs text-slate-500">Track filed logs & statuses</p>
                             </div>
                         </div>
-                    </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
 
-                    <div class="opacity-60 cursor-not-allowed flex items-center justify-between p-4 rounded-lg bg-slate-900/40 border border-slate-800/80 text-slate-500">
+                    <!-- Memos Link -->
+                    <a href="#/safety/memos" id="nav-safety-memos"
+                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
                         <div class="flex items-center space-x-3">
-                            <div class="h-9 w-9 rounded-md bg-slate-800 flex items-center justify-center text-slate-600">
-                                <i class="fa-solid fa-scale-balanced"></i>
+                            <div class="h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors">
+                                <i class="fa-solid fa-bullhorn"></i>
                             </div>
                             <div class="text-left">
-                                <p class="text-sm font-bold">Compliance Library</p>
-                                <p class="text-xs text-slate-600">Transport Canada standards</p>
+                                <p class="text-sm font-bold">Memos</p>
+                                <p class="text-xs text-slate-500">Flight safety directives</p>
                             </div>
                         </div>
-                    </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </nav>
             </div>
         </div>
@@ -79,43 +84,81 @@
 
 <script>
     // Self-contained nested routing controller for the Safety module
-    (async function handleSafetySubRouting() {
+    (function() {
         const pane = document.getElementById('safety-detail-pane');
-        const rawHash = window.location.hash || '#/safety';
-        
-        // Remove active styling from all layout tabs first
-        document.querySelectorAll('[id^="nav-safety-"]').forEach(el => {
-            el.classList.remove('border-aviationRed', 'bg-slate-900/80');
-            el.classList.add('border-aviationBorder', 'bg-slate-900');
-        });
 
-        if (rawHash === '#/safety/create') {
-            // Apply visual "Active" card styling to the tab
-            const activeTab = document.getElementById('nav-safety-create');
-            if (activeTab) {
-                activeTab.classList.add('border-aviationRed', 'bg-slate-900/80');
-                activeTab.classList.remove('border-aviationBorder', 'bg-slate-900');
+        async function renderSubRoute() {
+            const rawHash = window.location.hash || '#/safety';
+            
+            // 1. Reset active visual state on all links
+            document.querySelectorAll('[id^="nav-safety-"]').forEach(el => {
+                el.classList.remove('border-aviationRed', 'bg-slate-900/80');
+                el.classList.add('border-aviationBorder', 'bg-slate-900');
+            });
+
+            // 2. Select corresponding component fragment
+            let targetFragment = '';
+            let activeTabId = '';
+
+            if (rawHash === '#/safety/create') {
+                targetFragment = './views/safety-create.html';
+                activeTabId = 'nav-safety-create';
+            } else if (rawHash === '#/safety/view') {
+                targetFragment = './views/safety-view.html';
+                activeTabId = 'nav-safety-view';
+            } else if (rawHash === '#/safety/memos') {
+                targetFragment = './views/safety-memos.html';
+                activeTabId = 'nav-safety-memos';
             }
 
-            // Fetch and inject the standalone create report form fragment
-            try {
-                pane.style.opacity = '0';
-                const response = await fetch('./views/safety-create.html');
-                if (!response.ok) throw new Error();
-                
-                setTimeout(async () => {
-                    pane.innerHTML = await response.text();
-                    pane.style.opacity = '1';
-                    
-                    // Trigger the date autoloader since the HTML was dynamically injected
-                    const dateInput = document.getElementById('eventDate');
-                    if (dateInput) dateInput.valueAsDate = new Date();
-                }, 100);
+            // 3. Inject content or fallback to default message shell
+            if (targetFragment) {
+                // Style selected item
+                const activeTab = document.getElementById(activeTabId);
+                if (activeTab) {
+                    activeTab.classList.add('border-aviationRed', 'bg-slate-900/80');
+                    activeTab.classList.remove('border-aviationBorder', 'bg-slate-900');
+                }
 
-            } catch (err) {
-                pane.innerHTML = `<div class="p-8 text-center text-red-400">Failed to load safety form view.</div>`;
-                pane.style.opacity = '1';
+                try {
+                    pane.style.opacity = '0';
+                    const response = await fetch(targetFragment);
+                    if (!response.ok) throw new Error();
+                    
+                    setTimeout(async () => {
+                        pane.innerHTML = await response.text();
+                        pane.style.opacity = '1';
+                        
+                        // Execute date autoloader if loading the creation form
+                        const dateInput = document.getElementById('eventDate');
+                        if (dateInput) dateInput.valueAsDate = new Date();
+                    }, 100);
+                } catch (err) {
+                    pane.innerHTML = `
+                        <div class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
+                            <i class="fa-solid fa-person-digging text-aviationRed text-3xl mb-3"></i>
+                            <h3 class="text-lg font-bold text-slate-300">Module Under Construction</h3>
+                            <p class="text-xs text-slate-500 mt-1">The interface fragment for this view hasn't been built yet.</p>
+                        </div>`;
+                    pane.style.opacity = '1';
+                }
+            } else {
+                // Default fallback shell
+                pane.innerHTML = `
+                    <div class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
+                        <div class="h-16 w-16 rounded-full bg-slate-900 flex items-center justify-center border border-aviationBorder mb-4 shadow-inner">
+                            <i class="fa-solid fa-arrow-pointer text-slate-500 text-xl animate-bounce"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-300">No Module Selected</h3>
+                        <p class="text-sm text-slate-500 mt-1.5 max-w-sm">Select a safety framework module from the panel on the left to display its interactive layout.</p>
+                    </div>`;
             }
         }
+
+        // Hook up listener so clicking navigation updates the pane without full core reloads
+        window.addEventListener('hashchange', renderSubRoute);
+        
+        // Initial load check
+        renderSubRoute();
     })();
 </script>
