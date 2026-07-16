@@ -4,44 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bonair Flight Ops Portal</title>
-    <!-- Tailwind CSS CDN for instant modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for clean, sharp flight ops icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
-        // Custom color configurations to match the aviation livery
+        // Custom color configurations to match the dark theme and aviation accents
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        aviationRed: '#D62227', // Firefighting high-vis red
-                        aviationDark: '#1E293B', // Clean slate cockpit gray
-                        aviationLight: '#F8FAFC' // Soft background white
+                        aviationRed: '#E11D48', // Vibrant high-vis firefighting red
+                        aviationDark: '#0F172A', // Deep space cockpit midnight
+                        aviationCard: '#1E293B', // Sleek slate for cards and containers
+                        aviationBorder: '#334155' // Subtle divider line gray
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-aviationLight text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="bg-aviationDark text-slate-200 font-sans min-h-screen flex flex-col">
 
-    <!-- Top Navigation Bar -->
-    <nav class="bg-aviationDark text-white shadow-md border-b-4 border-aviationRed">
+    <nav class="bg-slate-950 text-white shadow-md border-b-4 border-aviationRed">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Logo / Brand -->
                 <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-fire-extinguisher text-aviationRed text-2xl"></i>
+                    <i class="fa-solid fa-plane text-aviationRed text-2xl transform -rotate-45"></i>
                     <span class="text-2xl font-black tracking-wider text-white">B<span class="text-aviationRed">ONAIR</span></span>
-                    <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded uppercase font-semibold tracking-widest hidden sm:inline-block">Flight Ops</span>
+                    <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded uppercase font-semibold tracking-widest hidden sm:inline-block">Flight Ops</span>
                 </div>
-                <!-- User Profile Corner -->
                 <div class="flex items-center space-x-4">
                     <div class="text-right hidden md:block">
-                        <p class="text-sm font-medium">Flight Crew Terminal</p>
-                        <p class="text-xs text-slate-400">Status: Active Duty</p>
+                        <p class="text-sm font-medium text-slate-300">Flight Crew Terminal</p>
+                        <p class="text-xs text-emerald-500 font-medium">● System Status: Online</p>
                     </div>
-                    <div class="h-9 w-9 rounded-full bg-aviationRed flex items-center justify-center font-bold text-white shadow-sm">
+                    <div class="h-9 w-9 rounded-full bg-aviationRed flex items-center justify-center font-bold text-white shadow-md">
                         P
                     </div>
                 </div>
@@ -49,103 +45,100 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- Welcome Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Pilot Dashboard</h1>
-            <p class="text-slate-500 mt-1">Unified systems access point. Select an operational module below.</p>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">Pilot Dashboard</h1>
+            <p class="text-slate-400 mt-1">Unified systems access point. Select an operational module below.</p>
         </div>
 
-        <!-- The 4 Main Operational Grid Buttons -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             
-            <!-- SAFETY MODULE BUTTON -->
-            <a href="safety.html" class="group bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 hover:border-aviationRed p-6 transition-all duration-200 flex flex-col justify-between">
+            <a href="safety.html" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200 flex flex-col justify-between">
                 <div class="flex items-start justify-between">
-                    <div class="p-3 bg-red-50 text-aviationRed rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
+                    <div class="p-3 bg-red-950/50 text-aviationRed rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
                         <i class="fa-solid fa-shield-halved text-2xl"></i>
                     </div>
-                    <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">SMS Compliant</span>
+                    <span class="text-xs font-bold text-emerald-400 bg-emerald-950/50 px-2 py-1 rounded border border-emerald-800/30">SMS Compliant</span>
                 </div>
                 <div class="mt-8">
-                    <h3 class="text-xl font-bold text-slate-900 group-hover:text-aviationRed transition-colors">Safety Reports</h3>
-                    <p class="text-sm text-slate-500 mt-1">File digital hazard, incident, or maintenance safety logs seamlessly.</p>
+                    <h3 class="text-xl font-bold text-white group-hover:text-aviationRed transition-colors">Safety Reports</h3>
+                    <p class="text-sm text-slate-400 mt-1">File digital hazard, incident, or maintenance safety logs seamlessly.</p>
                 </div>
             </a>
 
-            <!-- SCHEDULE MODULE BUTTON -->
-            <a href="schedule.html" class="group bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 hover:border-aviationRed p-6 transition-all duration-200 flex flex-col justify-between">
+            <a href="schedule.html" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200 flex flex-col justify-between">
                 <div class="flex items-start justify-between">
-                    <div class="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
+                    <div class="p-3 bg-blue-950/50 text-blue-400 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
                         <i class="fa-solid fa-calendar-days text-2xl"></i>
                     </div>
-                    <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">Next: On-Call</span>
+                    <span class="text-xs font-bold text-blue-400 bg-blue-950/50 px-2 py-1 rounded border border-blue-800/30">Next: On-Call</span>
                 </div>
                 <div class="mt-8">
-                    <h3 class="text-xl font-bold text-slate-900 group-hover:text-aviationRed transition-colors">Roster & Schedule</h3>
-                    <p class="text-sm text-slate-500 mt-1">View monthly crew pairings, base deployments, and duty schedules.</p>
+                    <h3 class="text-xl font-bold text-white group-hover:text-aviationRed transition-colors">Roster & Schedule</h3>
+                    <p class="text-sm text-slate-400 mt-1">View monthly crew pairings, base deployments, and duty schedules.</p>
                 </div>
             </a>
 
-            <!-- DOCUMENTS & CURRENCY BUTTON -->
-            <a href="documents.html" class="group bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 hover:border-aviationRed p-6 transition-all duration-200 flex flex-col justify-between">
+            <a href="documents.html" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200 flex flex-col justify-between">
                 <div class="flex items-start justify-between">
-                    <div class="p-3 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
+                    <div class="p-3 bg-amber-950/50 text-amber-400 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
                         <i class="fa-solid fa-file-invoice text-2xl"></i>
                     </div>
-                    <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">2 Actions Required</span>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-950/50 px-2 py-1 rounded border border-amber-800/30">2 Actions Required</span>
                 </div>
                 <div class="mt-8">
-                    <h3 class="text-xl font-bold text-slate-900 group-hover:text-aviationRed transition-colors">Docs & Currency</h3>
-                    <p class="text-sm text-slate-500 mt-1">Access company SOPs, manuals, and track critical pilot flight currencies.</p>
+                    <h3 class="text-xl font-bold text-white group-hover:text-aviationRed transition-colors">Docs & Currency</h3>
+                    <p class="text-sm text-slate-400 mt-1">Access company SOPs, manuals, and track critical pilot flight currencies.</p>
                 </div>
             </a>
 
-            <!-- TIMESHEETS MODULE BUTTON -->
-            <a href="timesheets.html" class="group bg-white rounded-xl shadow-sm hover:shadow-md border border-slate-200 hover:border-aviationRed p-6 transition-all duration-200 flex flex-col justify-between">
+            <a href="timesheets.html" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200 flex flex-col justify-between">
                 <div class="flex items-start justify-between">
-                    <div class="p-3 bg-purple-50 text-purple-600 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
-                        <i class="fa-solid fa-clock-history text-2xl"></i>
+                    <div class="p-3 bg-purple-950/50 text-purple-400 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
+                        <i class="fa-solid fa-clock-rotate-left text-2xl"></i>
                     </div>
-                    <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">Pay Period Open</span>
+                    <span class="text-xs font-bold text-slate-400 bg-slate-800 px-2 py-1 rounded border border-slate-700/50">Pay Period Open</span>
                 </div>
                 <div class="mt-8">
-                    <h3 class="text-xl font-bold text-slate-900 group-hover:text-aviationRed transition-colors">Duty Timesheets</h3>
-                    <p class="text-sm text-slate-500 mt-1">Log daily duty timelines, flight legs, up-times, and submit timesheets.</p>
+                    <h3 class="text-xl font-bold text-white group-hover:text-aviationRed transition-colors">Duty Timesheets</h3>
+                    <p class="text-sm text-slate-400 mt-1">Log daily duty timelines, flight legs, up-times, and submit timesheets.</p>
                 </div>
             </a>
 
         </div>
 
-        <!-- Quick Pilot Briefing / System Overview Section -->
-        <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center">
+        <div class="bg-aviationCard rounded-xl border border-aviationBorder p-6 shadow-lg">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center">
                 <i class="fa-solid fa-circle-info text-aviationRed mr-2"></i> Quick Status Briefing
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 divide-y md:divide-y-0 md:divide-x divide-slate-700">
                 <div class="pt-4 md:pt-0">
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Base</p>
-                    <p class="text-lg font-bold text-slate-800 mt-1">YXX - Abbotsford Training</p>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Deployment Base</p>
+                    <p class="text-lg font-bold text-slate-200 mt-1">YXX - Abbotsford Headquarters</p>
                 </div>
                 <div class="pt-4 md:pt-0 md:pl-6">
                     <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Pay Period Hours</p>
-                    <p class="text-lg font-bold text-slate-800 mt-1">42.5 hrs logged</p>
+                    <p class="text-lg font-bold text-slate-200 mt-1">42.5 hrs logged</p>
                 </div>
                 <div class="pt-4 md:pt-0 md:pl-6">
                     <p class="text-xs font-bold uppercase tracking-wider text-slate-400">System Notification</p>
-                    <p class="text-sm text-slate-600 mt-1">Annual flight manual update package issued. Please review in the Docs module.</p>
+                    <p class="text-sm text-slate-300 mt-1">Annual fleet operations update issued. Please review pending updates in the Docs module.</p>
                 </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-4 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            &copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.
+    <footer class="bg-slate-950 text-slate-500 text-xs py-4 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>
+                &copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.1.0-build</span>
+            </div>
         </div>
     </footer>
 
