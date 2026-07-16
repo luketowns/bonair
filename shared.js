@@ -82,10 +82,11 @@
             // By prepending a dot and a slash, we force the browser to read relative to your folder root
 let targetViewFile = './views/dashboard.html';
 
-if (rawHash === '#/safety') {
-    targetViewFile = './views/safety.html';
-} else if (rawHash === '#/safety/create') {
+// Order matters: check the deeper sub-route first!
+if (rawHash === '#/safety/create' || rawHash.startsWith('#/safety/create')) {
     targetViewFile = './views/safety-create.html';
+} else if (rawHash === '#/safety' || rawHash.startsWith('#/safety')) {
+    targetViewFile = './views/safety.html';
 } else if (rawHash !== '#/' && rawHash !== '') {
     targetViewFile = './views/404.html'; 
 }
