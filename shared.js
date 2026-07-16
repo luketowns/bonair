@@ -1,4 +1,4 @@
-// shared.js - Asynchronous Dynamic Router Engine (Route Specificity Fix)
+// shared.js - Master Centralized SPA Router (v1.6.5-nesting-resolved)
 (function() {
     const head = document.head;
 
@@ -58,14 +58,14 @@
         </nav>`;
         document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-        // Static Footer Injection (Updated Footprint)
+        // Static Footer Injection
         const footerHTML = `
         <footer class="bg-slate-950 text-slate-500 text-xs py-4 border-t border-slate-900 mt-auto">
             <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
                 <div>&copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.</div>
                 <div class="flex items-center space-x-2">
                     <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.5</span>
+                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.5-nesting-resolved</span>
                 </div>
             </div>
         </footer>`;
@@ -73,38 +73,107 @@
 
         const app = document.getElementById('app');
 
-        // The Engine: Maps the browser hash directly to our external views folder
+        // Handles rendering inner views inside Safety layout
+        async function handleSafetySubRoutes() {
+            const pane = document.getElementById('safety-detail-pane');
+            if (!pane) return;
+
+            const rawHash = window.location.hash || '#/safety';
+
+            // Reset tab styling
+            document.querySelectorAll('[id^="nav-safety-"]').forEach(el => {
+                el.classList.remove('border-aviationRed', 'bg-slate-900/80');
+                el.classList.add('border-aviationBorder', 'bg-slate-900');
+            });
+
+            let targetFragment = '';
+            let activeTabId = '';
+
+            if (rawHash === '#/safety/create') {
+                targetFragment = './views/safety-create.html';
+                activeTabId = 'nav-safety-create';
+            } else if (rawHash === '#/safety/view') {
+                targetFragment = './views/safety-view.html';
+                activeTabId = 'nav-safety-view';
+            } else if (rawHash === '#/safety/memos') {
+                targetFragment = './views/safety-memos.html';
+                activeTabId = 'nav-safety-memos';
+            }
+
+            if (targetFragment) {
+                const activeTab = document.getElementById(activeTabId);
+                if (activeTab) {
+                    activeTab.classList.add('border-aviationRed', 'bg-slate-900/80');
+                    activeTab.classList.remove('border-aviationBorder', 'bg-slate-900');
+                }
+
+                try {
+                    const response = await fetch(targetFragment);
+                    if (!response.ok) throw new Error();
+                    pane.innerHTML = await response.text();
+                    
+                    // Auto-load date
+                    const dateInput = document.getElementById('eventDate');
+                    if (dateInput) dateInput.valueAsDate = new Date();
+                } catch (err) {
+                    pane.innerHTML = `<div class="p-8 text-center text-red-400">Failed to load sub-module content.</div>`;
+                }
+            } else {
+                pane.innerHTML = `
+                    <div class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
+                        <div class="h-16 w-16 rounded-full bg-slate-900 flex items-center justify-center border border-aviationBorder mb-4 shadow-inner">
+                            <i class="fa-solid fa-arrow-pointer text-slate-500 text-xl animate-bounce"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-300">No Module Selected</h3>
+                        <p class="text-sm text-slate-500 mt-1.5 max-w-sm">Select a safety framework module from the panel on the left to display its interactive layout.</p>
+                    </div>`;
+            }
+        }
+
+        // Parent routing engine
         async function handleRoute() {
             const rawHash = window.location.hash || '#/';
-            app.classList.remove('visible'); // Fade out old content
+            const onSafetyPage = rawHash.startsWith('#/safety');
 
-            let targetViewFile = './views/dashboard.html';
+            // If we are navigating to safety, check if the base shell is already present
+            const safetyShellExists = document.getElementById('safety-detail-pane') !== null;
 
-            // Specific sub-routes MUST check first to avoid being swallowed by generic matching
-            if (rawHash.startsWith('#/safety')) {
-    targetViewFile = './views/safety.html';
-} else if (rawHash !== '#/' && rawHash !== '') {
-    targetViewFile = './views/404.html'; 
-}
+            if (onSafetyPage && safetyShellExists) {
+                // The parent layout is already loaded! Just update the inside panel.
+                await handleSafetySubRoutes();
+            } else {
+                // Otherwise, perform a full page fade-out transition
+                app.classList.remove('visible');
 
-            // Fetch the fragment text over the network and drop it in the app container
-            setTimeout(async () => {
-                try {
-                    const response = await fetch(targetViewFile);
-                    if (!response.ok) throw new Error('Template file not found');
-                    app.innerHTML = await response.text();
-                } catch (err) {
-                    app.innerHTML = `
-                        <div class="text-center py-12">
-                            <i class="fa-solid fa-triangle-exclamation text-aviationRed text-5xl mb-4"></i>
-                            <h2 class="text-2xl font-bold text-white">Module Under Construction</h2>
-                            <p class="text-slate-400 mt-2">The layout for <strong>${targetViewFile}</strong> hasn't been added to your views folder yet.</p>
-                            <a href="#/" class="mt-4 inline-block bg-aviationRed text-white px-4 py-2 rounded font-semibold text-sm">Back to Dashboard</a>
-                        </div>
-                    `;
+                let targetViewFile = './views/dashboard.html';
+                if (onSafetyPage) {
+                    targetViewFile = './views/safety.html';
+                } else if (rawHash !== '#/' && rawHash !== '') {
+                    targetViewFile = './views/404.html'; 
                 }
-                app.classList.add('visible'); // Fade in new content
-            }, 120);
+
+                setTimeout(async () => {
+                    try {
+                        const response = await fetch(targetViewFile);
+                        if (!response.ok) throw new Error('Template file not found');
+                        app.innerHTML = await response.text();
+
+                        // If safety was loaded, wait a frame then resolve nested panel
+                        if (onSafetyPage) {
+                            await handleSafetySubRoutes();
+                        }
+                    } catch (err) {
+                        app.innerHTML = `
+                            <div class="text-center py-12">
+                                <i class="fa-solid fa-triangle-exclamation text-aviationRed text-5xl mb-4"></i>
+                                <h2 class="text-2xl font-bold text-white">Module Under Construction</h2>
+                                <p class="text-slate-400 mt-2">The layout file has not been deployed yet.</p>
+                                <a href="#/" class="mt-4 inline-block bg-aviationRed text-white px-4 py-2 rounded font-semibold text-sm">Back to Dashboard</a>
+                            </div>`;
+                    }
+                    app.classList.add('visible');
+                }, 120);
+            }
         }
 
         window.addEventListener('hashchange', handleRoute);
