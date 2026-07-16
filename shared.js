@@ -1,4 +1,4 @@
-// shared.js - Asynchronous Dynamic Router Engine
+// shared.js - Asynchronous Dynamic Router Engine (Route Specificity Fix)
 (function() {
     const head = document.head;
 
@@ -58,14 +58,14 @@
         </nav>`;
         document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-        // Static Footer Injection
+        // Static Footer Injection (Updated Footprint)
         const footerHTML = `
         <footer class="bg-slate-950 text-slate-500 text-xs py-4 border-t border-slate-900 mt-auto">
             <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
                 <div>&copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.</div>
                 <div class="flex items-center space-x-2">
                     <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.0-async</span>
+                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.2-routing-fix</span>
                 </div>
             </div>
         </footer>`;
@@ -78,18 +78,16 @@
             const rawHash = window.location.hash || '#/';
             app.classList.remove('visible'); // Fade out old content
 
-            // Map URL hashes cleanly to our separate views/ folder paths
-            // By prepending a dot and a slash, we force the browser to read relative to your folder root
-let targetViewFile = './views/dashboard.html';
+            let targetViewFile = './views/dashboard.html';
 
-// Order matters: check the deeper sub-route first!
-if (rawHash === '#/safety/create' || rawHash.startsWith('#/safety/create')) {
-    targetViewFile = './views/safety-create.html';
-} else if (rawHash === '#/safety' || rawHash.startsWith('#/safety')) {
-    targetViewFile = './views/safety.html';
-} else if (rawHash !== '#/' && rawHash !== '') {
-    targetViewFile = './views/404.html'; 
-}
+            // Specific sub-routes MUST check first to avoid being swallowed by generic matching
+            if (rawHash === '#/safety/create' || rawHash.startsWith('#/safety/create')) {
+                targetViewFile = './views/safety-create.html';
+            } else if (rawHash === '#/safety' || rawHash.startsWith('#/safety')) {
+                targetViewFile = './views/safety.html';
+            } else if (rawHash !== '#/' && rawHash !== '') {
+                targetViewFile = './views/404.html'; 
+            }
 
             // Fetch the fragment text over the network and drop it in the app container
             setTimeout(async () => {
