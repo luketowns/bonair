@@ -80,13 +80,15 @@
 
             // Map URL hashes cleanly to our separate views/ folder paths
             // By prepending a dot and a slash, we force the browser to read relative to your folder root
-let targetViewFile = './views/dashboard.html'; 
-if (rawHash.startsWith('#/safety')) {
+let targetViewFile = './views/dashboard.html';
+
+if (rawHash === '#/safety') {
     targetViewFile = './views/safety.html';
+} else if (rawHash === '#/safety/create') {
+    targetViewFile = './views/safety-create.html';
 } else if (rawHash !== '#/' && rawHash !== '') {
-                // Wildcard fallback if page isn't registered
-                targetViewFile = 'views/404.html'; 
-            }
+    targetViewFile = './views/404.html'; 
+}
 
             // Fetch the fragment text over the network and drop it in the app container
             setTimeout(async () => {
