@@ -79,10 +79,11 @@
             app.classList.remove('visible'); // Fade out old content
 
             // Map URL hashes cleanly to our separate views/ folder paths
-            let targetViewFile = 'views/dashboard.html';
-            if (rawHash.startsWith('#/safety')) {
-                targetViewFile = 'views/safety.html';
-            } else if (rawHash !== '#/' && rawHash !== '') {
+            // By prepending a dot and a slash, we force the browser to read relative to your folder root
+let targetViewFile = './views/dashboard.html'; 
+if (rawHash.startsWith('#/safety')) {
+    targetViewFile = './views/safety.html';
+} else if (rawHash !== '#/' && rawHash !== '') {
                 // Wildcard fallback if page isn't registered
                 targetViewFile = 'views/404.html'; 
             }
