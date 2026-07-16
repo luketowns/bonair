@@ -1,51 +1,121 @@
-<!-- Back Button with Hash Route -->
-<div class="mb-6">
-    <a href="#/" class="inline-flex items-center text-sm font-semibold text-slate-400 hover:text-aviationRed transition-colors group">
-        <i class="fa-solid fa-arrow-left mr-2 transform group-hover:-translate-x-1 transition-transform"></i>
-        Back to Dashboard
-    </a>
-</div>
+<div class="space-y-6">
+    <!-- Breadcrumb -->
+    <div class="flex items-center space-x-2 text-sm text-slate-400">
+        <a href="#/" class="hover:text-aviationRed transition-colors">Dashboard</a>
+        <i class="fa-solid fa-chevron-right text-xs text-slate-600"></i>
+        <span class="text-slate-200 font-semibold">Safety Management System</span>
+    </div>
 
-<div class="mb-8">
-    <h1 class="text-3xl font-extrabold text-white tracking-tight">Safety Management System (SMS)</h1>
-    <p class="text-slate-400 mt-1">Submit digital hazard logs, track fleet safety filings, and review active operational safety memos.</p>
-</div>
+    <!-- Layout Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left Side: Interactive Navigation Grid (4 Cols) -->
+        <div class="lg:col-span-4 space-y-4">
+            <div class="bg-aviationCard border border-aviationBorder rounded-xl p-5 shadow-lg">
+                <div class="mb-4">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-aviationRed font-mono">SMS Framework</h2>
+                    <p class="text-lg font-extrabold text-white">Safety Modules</p>
+                </div>
+                
+                <!-- Navigation Stack -->
+                <nav class="space-y-2.5">
+                    <!-- Create Report Link -->
+                    <a href="#/safety/create" id="nav-safety-create"
+                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors">
+                                <i class="fa-solid fa-file-shield"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-sm font-bold">Create Report</p>
+                                <p class="text-xs text-slate-500">File a hazard or incident</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
 
-<!-- The 3 Safety Module Options Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <a href="#/safety/create" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200">
-        <div class="flex items-center space-x-4">
-            <div class="p-3 bg-red-950/50 text-aviationRed rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
-                <i class="fa-solid fa-file-circle-plus text-xl"></i>
+                    <!-- Placeholder Modules for Future Construction -->
+                    <div class="opacity-60 cursor-not-allowed flex items-center justify-between p-4 rounded-lg bg-slate-900/40 border border-slate-800/80 text-slate-500">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-9 w-9 rounded-md bg-slate-800 flex items-center justify-center text-slate-600">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-sm font-bold">Safety Analytics</p>
+                                <p class="text-xs text-slate-600">Risk trends & dashboard</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="opacity-60 cursor-not-allowed flex items-center justify-between p-4 rounded-lg bg-slate-900/40 border border-slate-800/80 text-slate-500">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-9 w-9 rounded-md bg-slate-800 flex items-center justify-center text-slate-600">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-sm font-bold">Compliance Library</p>
+                                <p class="text-xs text-slate-600">Transport Canada standards</p>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
             </div>
-            <h3 class="text-lg font-bold text-white group-hover:text-aviationRed transition-colors leading-tight">Create Report</h3>
         </div>
-        <p class="text-sm text-slate-400 mt-4">File a new flight hazard, cabin incident, bird strike, or maintenance safety log.</p>
-    </a>
 
-    <a href="#/safety/all" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200">
-        <div class="flex items-center space-x-4">
-            <div class="p-3 bg-blue-950/50 text-blue-400 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
-                <i class="fa-solid fa-list-check text-xl"></i>
+        <!-- Right Side: Dynamic Detail Display (8 Cols) -->
+        <div id="safety-detail-pane" class="lg:col-span-8 min-h-[450px] transition-all duration-150">
+            <!-- Default Placeholder -->
+            <div class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
+                <div class="h-16 w-16 rounded-full bg-slate-900 flex items-center justify-center border border-aviationBorder mb-4 shadow-inner">
+                    <i class="fa-solid fa-arrow-pointer text-slate-500 text-xl animate-bounce"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-300">No Module Selected</h3>
+                <p class="text-sm text-slate-500 mt-1.5 max-w-sm">Select a safety framework module from the panel on the left to display its interactive layout.</p>
             </div>
-            <h3 class="text-lg font-bold text-white group-hover:text-aviationRed transition-colors leading-tight">All Reports</h3>
         </div>
-        <p class="text-sm text-slate-400 mt-4">Review historical and pending safety filings submitted across the fleet operations.</p>
-    </a>
 
-    <a href="#/safety/memos" class="group bg-aviationCard rounded-xl shadow-lg border border-aviationBorder hover:border-aviationRed p-6 transition-all duration-200">
-        <div class="flex items-center space-x-4">
-            <div class="p-3 bg-amber-950/50 text-amber-400 rounded-lg group-hover:bg-aviationRed group-hover:text-white transition-all duration-200">
-                <i class="fa-solid fa-bullhorn text-xl"></i>
-            </div>
-            <h3 class="text-lg font-bold text-white group-hover:text-aviationRed transition-colors leading-tight">Safety Memos</h3>
-        </div>
-        <p class="text-sm text-slate-400 mt-4">Read active safety directives, bird activity reports, and seasonal base memos.</p>
-    </a>
+    </div>
 </div>
 
-<!-- Content Placeholder (where details will render) -->
-<div id="safety-content" class="bg-aviationCard rounded-xl border border-aviationBorder p-8 shadow-lg text-center text-slate-500">
-    <i class="fa-solid fa-arrow-pointer text-3xl text-slate-600 mb-3 block"></i>
-    <p class="text-base font-semibold text-slate-400">Select a safety framework module above to display layout.</p>
-</div>
+<script>
+    // Self-contained nested routing controller for the Safety module
+    (async function handleSafetySubRouting() {
+        const pane = document.getElementById('safety-detail-pane');
+        const rawHash = window.location.hash || '#/safety';
+        
+        // Remove active styling from all layout tabs first
+        document.querySelectorAll('[id^="nav-safety-"]').forEach(el => {
+            el.classList.remove('border-aviationRed', 'bg-slate-900/80');
+            el.classList.add('border-aviationBorder', 'bg-slate-900');
+        });
+
+        if (rawHash === '#/safety/create') {
+            // Apply visual "Active" card styling to the tab
+            const activeTab = document.getElementById('nav-safety-create');
+            if (activeTab) {
+                activeTab.classList.add('border-aviationRed', 'bg-slate-900/80');
+                activeTab.classList.remove('border-aviationBorder', 'bg-slate-900');
+            }
+
+            // Fetch and inject the standalone create report form fragment
+            try {
+                pane.style.opacity = '0';
+                const response = await fetch('./views/safety-create.html');
+                if (!response.ok) throw new Error();
+                
+                setTimeout(async () => {
+                    pane.innerHTML = await response.text();
+                    pane.style.opacity = '1';
+                    
+                    // Trigger the date autoloader since the HTML was dynamically injected
+                    const dateInput = document.getElementById('eventDate');
+                    if (dateInput) dateInput.valueAsDate = new Date();
+                }, 100);
+
+            } catch (err) {
+                pane.innerHTML = `<div class="p-8 text-center text-red-400">Failed to load safety form view.</div>`;
+                pane.style.opacity = '1';
+            }
+        }
+    })();
+</script>
