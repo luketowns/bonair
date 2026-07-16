@@ -1,8 +1,8 @@
-// shared.js - Consolidated layout engine with page transition handling
+// shared.js - Asynchronous Dynamic Router Engine
 (function() {
     const head = document.head;
 
-    // 1. Inject Tailwind & FontAwesome directly into the <head>
+    // 1. Inject Styles & CDNs
     const tailwindScript = document.createElement('script');
     tailwindScript.src = 'https://cdn.tailwindcss.com';
     head.appendChild(tailwindScript);
@@ -12,27 +12,13 @@
     fontAwesomeLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
     head.appendChild(fontAwesomeLink);
 
-    // 2. Inject seamless page transition CSS rules
     const styleTag = document.createElement('style');
     styleTag.innerHTML = `
-        /* Start hidden for the entry transition */
-        body {
-            opacity: 0;
-            transition: opacity 180ms ease-out;
-        }
-        /* Fade in class when page loads */
-        body.page-loaded {
-            opacity: 1;
-        }
-        /* Fade out transition class when navigating away */
-        body.page-exit {
-            opacity: 0 !important;
-            transition: opacity 120ms ease-in;
-        }
+        #app { opacity: 0; transition: opacity 120ms ease-in-out; }
+        #app.visible { opacity: 1; }
     `;
     head.appendChild(styleTag);
 
-    // Configure Tailwind Theme Colors on Load
     tailwindScript.onload = function() {
         tailwind.config = {
             theme: {
@@ -48,15 +34,15 @@
         };
     };
 
-    // 3. Inject Navigation, Footer, and handle transition classes
+    // 2. Main Page Render and Routing
     document.addEventListener("DOMContentLoaded", function() {
         
-        // --- NAVIGATION INJECTION ---
+        // Static Header Injection
         const navHTML = `
         <nav class="bg-slate-950 text-white shadow-md border-b-4 border-aviationRed">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
-                    <a href="index.html" class="flex items-center space-x-3 hover:opacity-90 transition-opacity">
+                    <a href="#/" class="flex items-center space-x-3 hover:opacity-90 transition-opacity">
                         <i class="fa-solid fa-plane text-aviationRed text-2xl transform -rotate-45"></i>
                         <span class="text-2xl font-black tracking-wider text-white">B<span class="text-aviationRed">ONAIR</span></span>
                     </a>
@@ -65,58 +51,63 @@
                             <p class="text-sm font-semibold text-slate-200">Bertie Beaver</p>
                             <p class="text-xs text-slate-400">Flight Crew</p>
                         </div>
-                        <div class="h-9 w-9 rounded-full bg-aviationRed flex items-center justify-center font-bold text-white shadow-md">
-                            B
-                        </div>
+                        <div class="h-9 w-9 rounded-full bg-aviationRed flex items-center justify-center font-bold text-white shadow-md">B</div>
                     </div>
                 </div>
             </div>
         </nav>`;
-        
-        document.body.className = "bg-aviationDark text-slate-200 font-sans min-h-screen flex flex-col";
         document.body.insertAdjacentHTML('afterbegin', navHTML);
 
-        // --- FOOTER INJECTION ---
+        // Static Footer Injection
         const footerHTML = `
         <footer class="bg-slate-950 text-slate-500 text-xs py-4 border-t border-slate-900 mt-auto">
             <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-                <div>
-                    &copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.
-                </div>
+                <div>&copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.</div>
                 <div class="flex items-center space-x-2">
                     <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.4.1-build</span>
+                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.0-async</span>
                 </div>
             </div>
         </footer>`;
-        
         document.body.insertAdjacentHTML('beforeend', footerHTML);
 
-        // Trigger the entry fade-in
-        setTimeout(() => {
-            document.body.classList.add('page-loaded');
-        }, 30);
+        const app = document.getElementById('app');
 
-        // --- INTERCEPT CLICKS FOR SEAMLESS TRANSITION ---
-        document.addEventListener('click', function(e) {
-            const anchor = e.target.closest('a');
-            
-            // Only intercept normal local internal links
-            if (anchor && anchor.href && anchor.getAttribute('href').endsWith('.html')) {
-                const targetUrl = anchor.getAttribute('href');
-                
-                // Prevent immediate jump
-                e.preventDefault();
-                
-                // Fade out current page first
-                document.body.classList.remove('page-loaded');
-                document.body.classList.add('page-exit');
-                
-                // Travel to next page once completely faded out
-                setTimeout(() => {
-                    window.location.href = targetUrl;
-                }, 120);
+        // The Engine: Maps the browser hash directly to our external views folder
+        async function handleRoute() {
+            const rawHash = window.location.hash || '#/';
+            app.classList.remove('visible'); // Fade out old content
+
+            // Map URL hashes cleanly to our separate views/ folder paths
+            let targetViewFile = 'views/dashboard.html';
+            if (rawHash.startsWith('#/safety')) {
+                targetViewFile = 'views/safety.html';
+            } else if (rawHash !== '#/' && rawHash !== '') {
+                // Wildcard fallback if page isn't registered
+                targetViewFile = 'views/404.html'; 
             }
-        });
+
+            // Fetch the fragment text over the network and drop it in the app container
+            setTimeout(async () => {
+                try {
+                    const response = await fetch(targetViewFile);
+                    if (!response.ok) throw new Error('Template file not found');
+                    app.innerHTML = await response.text();
+                } catch (err) {
+                    app.innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fa-solid fa-triangle-exclamation text-aviationRed text-5xl mb-4"></i>
+                            <h2 class="text-2xl font-bold text-white">Module Under Construction</h2>
+                            <p class="text-slate-400 mt-2">The layout for <strong>${targetViewFile}</strong> hasn't been added to your views folder yet.</p>
+                            <a href="#/" class="mt-4 inline-block bg-aviationRed text-white px-4 py-2 rounded font-semibold text-sm">Back to Dashboard</a>
+                        </div>
+                    `;
+                }
+                app.classList.add('visible'); // Fade in new content
+            }, 120);
+        }
+
+        window.addEventListener('hashchange', handleRoute);
+        handleRoute(); // Boot page view
     });
 })();
