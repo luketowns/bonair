@@ -1,15 +1,12 @@
 <div class="space-y-6">
-    <!-- Breadcrumb -->
     <div class="flex items-center space-x-2 text-sm text-slate-400">
         <a href="#/" class="hover:text-aviationRed transition-colors">Dashboard</a>
         <i class="fa-solid fa-chevron-right text-xs text-slate-600"></i>
         <span class="text-slate-200 font-semibold">Safety Management System</span>
     </div>
 
-    <!-- Layout Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <!-- Left Side: Interactive Navigation Grid (4 Cols) -->
         <div class="lg:col-span-4 space-y-4">
             <div class="bg-aviationCard border border-aviationBorder rounded-xl p-5 shadow-lg">
                 <div class="mb-4">
@@ -17,9 +14,7 @@
                     <p class="text-lg font-extrabold text-white">Safety Modules</p>
                 </div>
                 
-                <!-- Navigation Stack -->
                 <nav class="space-y-2.5">
-                    <!-- Create Report Link -->
                     <a href="#/safety/create" id="nav-safety-create"
                         class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
                         <div class="flex items-center space-x-3">
@@ -34,7 +29,6 @@
                         <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
                     </a>
 
-                    <!-- View Reports Link -->
                     <a href="#/safety/view" id="nav-safety-view"
                         class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
                         <div class="flex items-center space-x-3">
@@ -49,7 +43,6 @@
                         <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
                     </a>
 
-                    <!-- Memos Link -->
                     <a href="#/safety/memos" id="nav-safety-memos"
                         class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
                         <div class="flex items-center space-x-3">
@@ -67,9 +60,7 @@
             </div>
         </div>
 
-        <!-- Right Side: Dynamic Detail Display (8 Cols) -->
         <div id="safety-detail-pane" class="lg:col-span-8 min-h-[450px] transition-all duration-150">
-            <!-- Default Placeholder -->
             <div class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
                 <div class="h-16 w-16 rounded-full bg-slate-900 flex items-center justify-center border border-aviationBorder mb-4 shadow-inner">
                     <i class="fa-solid fa-arrow-pointer text-slate-500 text-xl animate-bounce"></i>
@@ -81,94 +72,3 @@
 
     </div>
 </div>
-
-<script>
-    (function() {
-        // Core routing renderer
-        async function renderSubRoute() {
-            const pane = document.getElementById('safety-detail-pane');
-            if (!pane) return; // Guard clause in case the container isn't ready
-            
-            const rawHash = window.location.hash || '#/safety';
-            
-            // 1. Reset visual indicators
-            document.querySelectorAll('[id^="nav-safety-"]').forEach(el => {
-                el.classList.remove('border-aviationRed', 'bg-slate-900/80');
-                el.classList.add('border-aviationBorder', 'bg-slate-900');
-            });
-
-            // 2. Select corresponding component fragment
-            let targetFragment = '';
-            let activeTabId = '';
-
-            if (rawHash.startsWith('#/safety/create')) {
-                targetFragment = './views/safety-create.html';
-                activeTabId = 'nav-safety-create';
-            } else if (rawHash.startsWith('#/safety/view')) {
-                targetFragment = './views/safety-view.html';
-                activeTabId = 'nav-safety-view';
-            } else if (rawHash.startsWith('#/safety/memos')) {
-                targetFragment = './views/safety-memos.html';
-                activeTabId = 'nav-safety-memos';
-            }
-
-            // 3. Inject content or restore default placeholder
-            if (targetFragment) {
-                const activeTab = document.getElementById(activeTabId);
-                if (activeTab) {
-                    activeTab.classList.add('border-aviationRed', 'bg-slate-900/80');
-                    activeTab.classList.remove('border-aviationBorder', 'bg-slate-900');
-                }
-
-                try {
-                    pane.style.opacity = '0';
-                    const response = await fetch(targetFragment);
-                    if (!response.ok) throw new Error();
-                    const htmlContent = await response.text();
-                    
-                    setTimeout(() => {
-                        pane.innerHTML = htmlContent;
-                        pane.style.opacity = '1';
-                        
-                        // Exec date autoloader if loading the creation form
-                        const dateInput = document.getElementById('eventDate');
-                        if (dateInput) dateInput.valueAsDate = new Date();
-                    }, 50);
-                } catch (err) {
-                    pane.innerHTML = `
-                        <div class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
-                            <i class="fa-solid fa-person-digging text-aviationRed text-3xl mb-3"></i>
-                            <h3 class="text-lg font-bold text-slate-300">Module Under Construction</h3>
-                            <p class="text-xs text-slate-500 mt-1">The interface fragment (<strong>${targetFragment}</strong>) hasn't been added to your views folder yet.</p>
-                        </div>`;
-                    pane.style.opacity = '1';
-                }
-            } else {
-                pane.innerHTML = `
-                    <div class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
-                        <div class="h-16 w-16 rounded-full bg-slate-900 flex items-center justify-center border border-aviationBorder mb-4 shadow-inner">
-                            <i class="fa-solid fa-arrow-pointer text-slate-500 text-xl animate-bounce"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-300">No Module Selected</h3>
-                        <p class="text-sm text-slate-500 mt-1.5 max-w-sm">Select a safety framework module from the panel on the left to display its interactive layout.</p>
-                    </div>`;
-            }
-        }
-
-        // Wait to execute until the browser has actually painted the pane element in the DOM
-        let attempts = 0;
-        function checkForPane() {
-            if (document.getElementById('safety-detail-pane')) {
-                // Remove existing hashchange listener to avoid stacking event duplicates
-                window.removeEventListener('hashchange', renderSubRoute);
-                window.addEventListener('hashchange', renderSubRoute);
-                renderSubRoute();
-            } else if (attempts < 20) {
-                attempts++;
-                setTimeout(checkForPane, 30);
-            }
-        }
-        
-        checkForPane();
-    })();
-</script>
