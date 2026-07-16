@@ -65,7 +65,7 @@
                 <div>&copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.</div>
                 <div class="flex items-center space-x-2">
                     <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.3-routing-fix</span>
+                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.4</span>
                 </div>
             </div>
         </footer>`;
