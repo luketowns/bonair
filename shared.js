@@ -1,5 +1,5 @@
-// shared.js - Master Centralized SPA Router (v1.6.5-nesting-resolved)
-(function() {
+// shared.js - Master Centralized SPA Router (v1.6.6-script-eval-fixed)
+(function () {
     const head = document.head;
 
     // 1. Inject Styles & CDNs
@@ -19,7 +19,7 @@
     `;
     head.appendChild(styleTag);
 
-    tailwindScript.onload = function() {
+    tailwindScript.onload = function () {
         tailwind.config = {
             theme: {
                 extend: {
@@ -34,9 +34,25 @@
         };
     };
 
+    // Helper to evaluate scripts inside dynamically loaded HTML fragments
+    function executeScriptsInside(container) {
+        if (!container) return;
+        const scripts = container.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            // Copy across any defined attributes (like src, type)
+            Array.from(oldScript.attributes).forEach(attr => {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+            // Inject and execute inline code
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+    }
+
     // 2. Main Page Render and Routing
-    document.addEventListener("DOMContentLoaded", function() {
-        
+    document.addEventListener("DOMContentLoaded", function () {
+
         // Static Header Injection
         const navHTML = `
         <nav class="bg-slate-950 text-white shadow-md border-b-4 border-aviationRed">
@@ -65,7 +81,7 @@
                 <div>&copy; 2026 Bonair Flight Systems Prototyping. Internal Simulation Only.</div>
                 <div class="flex items-center space-x-2">
                     <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.5-nesting-resolved</span>
+                    <span class="font-mono bg-slate-900 px-2.5 py-1 rounded border border-slate-800 text-slate-400">v1.6.6-script-eval-fixed</span>
                 </div>
             </div>
         </footer>`;
@@ -110,9 +126,13 @@
                 try {
                     const response = await fetch(targetFragment);
                     if (!response.ok) throw new Error();
+
                     pane.innerHTML = await response.text();
-                    
-                    // Auto-load date
+
+                    // Critical: Manually execute inline scripts after loading
+                    executeScriptsInside(pane);
+
+                    // Auto-load date if input is present
                     const dateInput = document.getElementById('eventDate');
                     if (dateInput) dateInput.valueAsDate = new Date();
                 } catch (err) {
@@ -131,9 +151,11 @@
         }
 
         // Parent routing engine
+        // Parent routing engine
         async function handleRoute() {
             const rawHash = window.location.hash || '#/';
             const onSafetyPage = rawHash.startsWith('#/safety');
+            const onTimesheetsPage = rawHash.startsWith('#/timesheets'); // 1. Check for timesheets route
 
             // If we are navigating to safety, check if the base shell is already present
             const safetyShellExists = document.getElementById('safety-detail-pane') !== null;
@@ -146,17 +168,24 @@
                 app.classList.remove('visible');
 
                 let targetViewFile = './views/dashboard.html';
+
                 if (onSafetyPage) {
                     targetViewFile = './views/safety.html';
+                } else if (onTimesheetsPage) {
+                    targetViewFile = './views/timesheets.html'; // 2. Map route to the timesheets file
                 } else if (rawHash !== '#/' && rawHash !== '') {
-                    targetViewFile = './views/404.html'; 
+                    targetViewFile = './views/404.html';
                 }
 
                 setTimeout(async () => {
                     try {
                         const response = await fetch(targetViewFile);
                         if (!response.ok) throw new Error('Template file not found');
+
                         app.innerHTML = await response.text();
+
+                        // Execute scripts inside main app viewport
+                        executeScriptsInside(app);
 
                         // If safety was loaded, wait a frame then resolve nested panel
                         if (onSafetyPage) {

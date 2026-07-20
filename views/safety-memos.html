@@ -1,0 +1,326 @@
+<div class="text-slate-200">
+    <!-- Combined Container with unified border/flow to eliminate the gap -->
+    <div class="bg-slate-950 rounded-xl border border-aviationBorder/60 overflow-hidden flex flex-col">
+
+        <!-- Memo Dashboard Header (Merged seamlessly to the workspace) -->
+        <div
+            class="bg-aviationCard p-5 border-b border-aviationBorder/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span
+                    class="bg-red-500/10 text-aviationRed border border-red-500/20 text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md font-mono">SMS-03</span>
+                <h1 class="text-xl font-black text-white tracking-tight mt-1.5">
+                    Flight Safety Memos
+                </h1>
+                <p class="text-xs text-slate-500 mt-0.5">Review operational updates, download PDFs, and file mandatory
+                    electronic read receipts.</p>
+            </div>
+            <!-- Compliance Track Stat -->
+            <div
+                class="flex items-center space-x-3 text-xs bg-slate-950 border border-aviationBorder rounded-lg p-2.5 px-4 font-mono">
+                <span class="text-slate-400">Compliance Rate:</span>
+                <span id="memo-compliance-stat" class="text-emerald-400 font-bold">--%</span>
+            </div>
+        </div>
+
+        <!-- Main Workspace Split-Pane -->
+        <div class="flex flex-col lg:flex-row min-h-[550px] overflow-hidden">
+            <!-- Left Side: List of Memos (Matching the 38% width of the reports view) -->
+            <div
+                class="w-full lg:w-[38%] border-r border-aviationBorder/80 overflow-y-auto max-h-[calc(100vh-220px)] bg-slate-950/40 p-4 space-y-4">
+                <div class="flex items-center justify-between border-b border-aviationBorder pb-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">Operational
+                        Directives</h3>
+                    <span
+                        class="text-[10px] bg-aviationRed/10 text-aviationRed px-2.5 py-0.5 rounded border border-aviationRed/20 font-bold uppercase tracking-wider"
+                        id="pending-count">0 Pending</span>
+                </div>
+
+                <div id="memo-list-container" class="space-y-2 max-h-[480px] overflow-y-auto pr-1">
+                    <!-- JavaScript populates memo item elements here -->
+                </div>
+            </div>
+
+            <!-- Right Side: Full Detail View -->
+            <div class="flex-1 p-6 lg:p-8 overflow-y-auto max-h-[calc(100vh-220px)] bg-slate-950 flex flex-col justify-between"
+                id="memo-detail-view-pane">
+                <div id="memo-detail-content" class="space-y-6 my-auto">
+                    <!-- Default state when no memo is clicked -->
+                    <div class="text-center py-16 flex flex-col items-center justify-center h-full">
+                        <div
+                            class="h-16 w-16 rounded-full bg-slate-900 border border-aviationBorder flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-envelope-open-text text-2xl text-slate-600"></i>
+                        </div>
+                        <h3 class="text-sm font-semibold text-slate-400">No Record Selected</h3>
+                        <p class="text-xs text-slate-500 max-w-xs mt-1">Choose an operational directive from the
+                            left-hand log panel to view files, check groups, and sign read acknowledgments.</p>
+                    </div>
+                </div>
+
+                <!-- Bottom Pagination Controls -->
+                <div id="memo-detail-footer"
+                    class="hidden border-t border-aviationBorder pt-4 mt-6 flex items-center justify-between">
+                    <button onclick="window.navigateMemo(-1)" id="prev-memo-btn"
+                        class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors py-1.5 px-3 bg-slate-900 border border-aviationBorder rounded hover:border-slate-700 font-mono">
+                        <i class="fa-solid fa-chevron-left"></i> Previous
+                    </button>
+                    <button onclick="window.navigateMemo(1)" id="next-memo-btn"
+                        class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors py-1.5 px-3 bg-slate-900 border border-aviationBorder rounded hover:border-slate-700 font-mono">
+                        Next <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        let activeMemoId = null;
+
+        // 1. Loader with LocalStorage cache logic mapping back to memos.json
+        async function loadMemos() {
+            let stored = localStorage.getItem('aviationMemos');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+
+            try {
+                const response = await fetch('data/memos.json');
+                const defaults = await response.json();
+                localStorage.setItem('aviationMemos', JSON.stringify(defaults));
+                return defaults;
+            } catch (error) {
+                console.error("Error loading data/memos.json:", error);
+                return [];
+            }
+        }
+
+        function saveMemos(memos) {
+            localStorage.setItem('aviationMemos', JSON.stringify(memos));
+        }
+
+        // 2. Render Left-side Navigation List (With dark borders & high-contrast states matching view log)
+        window.renderMemosList = async function () {
+            const memos = await loadMemos();
+            const container = document.getElementById('memo-list-container');
+            const pendingCountEl = document.getElementById('pending-count');
+            const complianceStat = document.getElementById('memo-compliance-stat');
+
+            if (!container) return;
+            container.innerHTML = '';
+
+            let pendingCount = 0;
+            let readCount = 0;
+
+            memos.forEach(memo => {
+                if (!memo.acknowledged) pendingCount++;
+                else readCount++;
+
+                const isActive = memo.id === activeMemoId;
+                const activeClasses = isActive ? 'border-aviationRed bg-slate-900/95' : 'border-transparent hover:bg-slate-900/60';
+
+                const badge = memo.acknowledged
+                    ? `<span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold uppercase tracking-wider">Acknowledged</span>`
+                    : `<span class="text-[9px] bg-rose-500/10 text-aviationRed px-2 py-0.5 rounded border border-rose-500/20 font-bold uppercase tracking-wider animate-pulse">Required</span>`;
+
+                const itemHtml = `
+                    <button onclick="window.selectMemo('${memo.id}')" id="memo-card-${memo.id}" 
+                            class="w-full text-left p-4 border-l-4 ${activeClasses} transition-all duration-150 focus:outline-none block border-b border-aviationBorder/40">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-xs font-mono font-bold text-slate-500">#ID-${memo.id}</span>
+                            ${badge}
+                        </div>
+                        <div class="text-sm font-bold text-white truncate mb-1">${memo.title}</div>
+                        <div class="text-[11px] text-slate-400 flex justify-between font-mono">
+                            <span class="truncate max-w-[150px]"><i class="fa-solid fa-file-pdf text-slate-600 mr-1"></i> ${memo.pdfName}</span>
+                            <span>${memo.modifiedDate}</span>
+                        </div>
+                    </button>
+                `;
+                container.insertAdjacentHTML('beforeend', itemHtml);
+            });
+
+            // Update stats
+            if (pendingCountEl) pendingCountEl.textContent = `${pendingCount} Pending`;
+            if (complianceStat) {
+                const rate = memos.length ? Math.round((readCount / memos.length) * 100) : 100;
+                complianceStat.textContent = `${rate}% Compliance`;
+            }
+        };
+
+        // 3. Select specific Memo & Populate Details Column (Stripped of all light-mode themes)
+        window.selectMemo = async function (memoId) {
+            activeMemoId = memoId;
+
+            // Handle active card highlight toggle
+            document.querySelectorAll('[id^="memo-card-"]').forEach(c => {
+                c.classList.remove('bg-slate-900/95', 'border-aviationRed');
+                c.classList.add('border-transparent');
+            });
+
+            const activeCard = document.getElementById(`memo-card-${memoId}`);
+            if (activeCard) {
+                activeCard.classList.add('bg-slate-900/95', 'border-aviationRed');
+                activeCard.classList.remove('border-transparent');
+            }
+
+            const memos = await loadMemos();
+            const memo = memos.find(m => m.id === memoId);
+            const contentPane = document.getElementById('memo-detail-content');
+            const footerPane = document.getElementById('memo-detail-footer');
+
+            if (!memo || !contentPane) return;
+
+            if (footerPane) footerPane.classList.remove('hidden');
+
+            const readReceiptHTML = memo.acknowledged
+                ? `
+                <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-5 flex items-start space-x-3">
+                    <div class="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0 text-sm">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-white">Read Receipt Confirmed</p>
+                        <p class="text-xs text-slate-400 mt-1">You acknowledged this directive on <strong class="text-emerald-400 font-mono">${memo.acknowledgedDate}</strong></p>
+                    </div>
+                </div>
+                `
+                : `
+                <div class="bg-aviationCard border border-aviationBorder rounded-xl p-5 space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-extrabold uppercase tracking-widest text-aviationRed font-mono">Mandatory Crew Action Required</span>
+                    </div>
+                    <label class="flex items-start space-x-3 cursor-pointer group select-none">
+                        <input type="checkbox" id="acknowledge-checkbox" onchange="window.toggleAcknowledgeBtn()" 
+                               class="mt-1 h-4.5 w-4.5 rounded border-aviationBorder bg-slate-950 text-aviationRed focus:ring-aviationRed focus:ring-offset-slate-900 transition-all cursor-pointer">
+                        <span class="text-xs text-slate-300 group-hover:text-white transition-colors leading-relaxed">
+                            I certify that I have thoroughly read, understood, and will comply with the operational instructions listed in this directive.
+                        </span>
+                    </label>
+                    <button id="submit-receipt-btn" disabled onclick="window.submitReadReceipt('${memo.id}')" 
+                            class="w-full py-3 px-4 rounded-lg bg-rose-950/20 text-rose-300 border border-rose-900/30 hover:border-aviationRed font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-rose-900/30 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-signature"></i> Sign and File Receipt
+                    </button>
+                </div>
+                `;
+
+            contentPane.innerHTML = `
+                <div class="animate-fadeIn space-y-6">
+                    <!-- Title block -->
+                    <div class="border-b border-aviationBorder pb-5">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                            <h3 class="text-lg font-black text-white tracking-tight">Directive Detail</h3>
+                            <span class="text-xs px-2.5 py-1 rounded border border-slate-700 bg-slate-900 text-slate-400 uppercase font-bold font-mono tracking-wider">${memo.id}</span>
+                        </div>
+                        
+                        <!-- Metadata Grid (Matching report view visual format) -->
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 bg-aviationCard p-4 rounded-xl border border-aviationBorder text-xs font-mono">
+                            <div>
+                                <span class="block text-slate-500 uppercase font-bold tracking-wider mb-1 font-sans">User Assigned</span>
+                                <span class="text-white font-medium flex items-center gap-1">
+                                    <i class="fa-solid fa-user-pilot text-slate-400 text-[10px]"></i> ${memo.assignedUser}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="block text-slate-500 uppercase font-bold tracking-wider mb-1 font-sans">Published By</span>
+                                <span class="text-white font-medium block">${memo.publishedBy}</span>
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <span class="block text-slate-500 uppercase font-bold tracking-wider mb-1 font-sans">Distribution Groups</span>
+                                <span class="text-white font-medium block truncate" title="${memo.groups.join(', ')}">${memo.groups.join(', ')}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description/Subject Body -->
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 font-mono flex items-center gap-1.5">
+                            <i class="fa-solid fa-align-left text-aviationRed/70"></i> Directive Subject
+                        </h4>
+                        <div class="text-slate-300 text-sm leading-relaxed bg-aviationCard p-5 rounded-xl border border-aviationBorder font-bold">
+                            "${memo.title}"
+                        </div>
+                    </div>
+
+                    <!-- Document Download Utility Row -->
+                    <div class="bg-aviationCard border border-aviationBorder rounded-xl p-4 flex items-center justify-between gap-4">
+                        <div class="flex items-center space-x-3 min-w-0">
+                            <div class="h-10 w-10 rounded bg-rose-500/10 text-aviationRed border border-rose-500/20 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] text-slate-500 font-mono block">Document Attachment:</span>
+                                <a href="#/safety/memos/download" onclick="event.preventDefault(); alert('Downloading: ${memo.pdfName}')" 
+                                   class="text-xs font-bold text-slate-300 hover:text-aviationRed transition-colors truncate block underline decoration-dotted font-mono">
+                                     ${memo.pdfName}
+                                </a>
+                            </div>
+                        </div>
+                        <button onclick="alert('Downloading: ${memo.pdfName}')" class="p-2 px-3 rounded-lg bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-white border border-aviationBorder transition-colors flex items-center gap-1.5 text-xs font-mono">
+                            <i class="fa-solid fa-download"></i> Download
+                        </button>
+                    </div>
+                    
+                    <!-- Safety Receipt Form Placement -->
+                    <div id="read-receipt-form-mount" class="pt-2">
+                        ${readReceiptHTML}
+                    </div>
+                </div>
+            `;
+        };
+
+        // 4. Update Receipt Completion state
+        window.submitReadReceipt = async function (memoId) {
+            const checkbox = document.getElementById('acknowledge-checkbox');
+            if (!checkbox || !checkbox.checked) return;
+
+            let memos = await loadMemos();
+            const index = memos.findIndex(m => m.id === memoId);
+
+            if (index !== -1) {
+                const now = new Date();
+                const timeString = now.toISOString().replace('T', ' ').substring(0, 16) + ' MST';
+
+                memos[index].acknowledged = true;
+                memos[index].acknowledgedDate = timeString;
+
+                saveMemos(memos);
+                await window.renderMemosList();
+                await window.selectMemo(memoId);
+            }
+        };
+
+        // 5. Toggle file button disability state
+        window.toggleAcknowledgeBtn = function () {
+            const checkbox = document.getElementById('acknowledge-checkbox');
+            const submitBtn = document.getElementById('submit-receipt-btn');
+            if (checkbox && submitBtn) {
+                submitBtn.disabled = !checkbox.checked;
+            }
+        };
+
+        // 6. Navigation pagination between items
+        window.navigateMemo = async function (direction) {
+            const memos = await loadMemos();
+            const currentIndex = memos.findIndex(m => m.id === activeMemoId);
+
+            if (currentIndex === -1) return;
+
+            let nextIndex = currentIndex + direction;
+            if (nextIndex >= 0 && nextIndex < memos.length) {
+                window.selectMemo(memos[nextIndex].id);
+            }
+        };
+
+        // Initial setup pipeline
+        async function init() {
+            await window.renderMemosList();
+            const memos = await loadMemos();
+            if (memos.length > 0) {
+                window.selectMemo(memos[0].id);
+            }
+        }
+
+        init();
+    })();
+</script>

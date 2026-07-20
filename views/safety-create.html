@@ -1,91 +1,121 @@
-<!-- Inside-Pane Form Container -->
-<div class="bg-aviationCard rounded-xl border border-aviationBorder p-6 shadow-xl">
-    <div class="mb-6 pb-4 border-b border-aviationBorder">
-        <span class="bg-red-500/10 text-aviationRed border border-red-500/20 text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md font-mono">Form SMS-01</span>
-        <h1 class="text-xl font-black text-white tracking-tight mt-2">Submit Safety Report</h1>
-        <p class="text-xs text-slate-400 mt-1">Direct digital submission to Conair Flight Operations Management.</p>
+<div class="flex flex-col h-full text-slate-200">
+    <!-- Header Controls (Directly connected to the workspace) -->
+    <div
+        class="bg-aviationCard p-5 border-b border-aviationBorder flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <span
+                class="bg-red-500/10 text-aviationRed border border-red-500/20 text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md font-mono">Form
+                SMS-01</span>
+            <h2 class="text-xl font-black text-white tracking-tight mt-1.5">Submit Safety Report</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Direct digital submission to Conair Flight Operations Management
+            </p>
+        </div>
     </div>
 
-    <form id="smsForm" class="space-y-5">
-        
-        <!-- Date & Location Row -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <!-- Date Input -->
-            <div>
-                <label for="eventDate" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                    Date of Event <span class="text-aviationRed">*</span>
-                </label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none text-xs">
-                        <i class="fa-regular fa-calendar"></i>
-                    </span>
-                    <input type="date" id="eventDate" required
-                        class="bg-slate-950 border border-aviationBorder text-slate-200 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-aviationRed focus:border-transparent block w-full pl-9 p-2.5 transition-all">
+    <!-- Main Workspace (Dark Canvas Body) -->
+    <div class="flex-1 p-6 lg:p-8 bg-slate-950 overflow-y-auto">
+        <!-- Form Container swapped to dark bg-slate-950/40 to match view layouts -->
+        <div class="max-w-4xl mx-auto bg-slate-950 border border-aviationBorder p-6 rounded-xl shadow-xl">
+            <form id="smsForm" class="space-y-5">
+
+                <!-- Date & Location Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Date Input -->
+                    <div>
+                        <label for="eventDate"
+                            class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Date of Event <span class="text-aviationRed">*</span>
+                        </label>
+                        <div class="relative">
+                            <span
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none text-xs">
+                                <i class="fa-regular fa-calendar"></i>
+                            </span>
+                            <!-- Inputs changed from bg-slate-950 to bg-aviationCard -->
+                            <input type="date" id="eventDate" required
+                                class="bg-aviationCard border border-aviationBorder text-slate-200 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-aviationRed focus:border-transparent block w-full pl-9 p-2.5 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Location Input -->
+                    <div>
+                        <label for="location"
+                            class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Location / Base <span class="text-aviationRed">*</span>
+                        </label>
+                        <div class="relative">
+                            <span
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none text-xs">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </span>
+                            <!-- Inputs changed from bg-slate-950 to bg-aviationCard -->
+                            <input type="text" id="location" required placeholder="e.g. YKA Kamloops"
+                                class="bg-aviationCard border border-aviationBorder text-slate-200 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-aviationRed focus:border-transparent block w-full pl-9 p-2.5 placeholder-slate-700 transition-all">
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Location Input -->
-            <div>
-                <label for="location" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                    Location / Base <span class="text-aviationRed">*</span>
-                </label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none text-xs">
-                        <i class="fa-solid fa-location-dot"></i>
-                    </span>
-                    <input type="text" id="location" required placeholder="e.g. YKA Kamloops"
-                        class="bg-slate-950 border border-aviationBorder text-slate-200 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-aviationRed focus:border-transparent block w-full pl-9 p-2.5 placeholder-slate-700 transition-all">
+                <!-- Personnel Involved -->
+                <div>
+                    <label for="personnel"
+                        class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Personnel Involved
+                    </label>
+                    <div class="relative">
+                        <span
+                            class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none text-xs">
+                            <i class="fa-solid fa-users-gear"></i>
+                        </span>
+                        <!-- Inputs changed from bg-slate-950 to bg-aviationCard -->
+                        <input type="text" id="personnel" placeholder="e.g. Flight Crew, Crew Chief, Maintenance Tech"
+                            class="bg-aviationCard border border-aviationBorder text-slate-200 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-aviationRed focus:border-transparent block w-full pl-9 p-2.5 placeholder-slate-700 transition-all">
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Personnel Involved -->
-        <div>
-            <label for="personnel" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                Personnel Involved
-            </label>
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none text-xs">
-                    <i class="fa-solid fa-users-gear"></i>
-                </span>
-                <input type="text" id="personnel" placeholder="e.g. Flight Crew, Crew Chief, Maintenance Tech"
-                    class="bg-slate-950 border border-aviationBorder text-slate-200 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-aviationRed focus:border-transparent block w-full pl-9 p-2.5 placeholder-slate-700 transition-all">
-            </div>
-        </div>
+                <!-- Observation Text Area -->
+                <div>
+                    <label for="observation"
+                        class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Observation Details <span class="text-aviationRed">*</span>
+                    </label>
+                    <!-- Textarea changed from bg-slate-950 to bg-aviationCard -->
+                    <textarea id="observation" required rows="5"
+                        placeholder="Provide details regarding the observed hazards, system malfunctions, or deviations from standard procedures..."
+                        class="bg-aviationCard border border-aviationBorder text-slate-200 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-aviationRed focus:border-transparent block w-full p-3 placeholder-slate-700 transition-all resize-y"></textarea>
+                </div>
 
-        <!-- Observation Text Area -->
-        <div>
-            <label for="observation" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                Observation Details <span class="text-aviationRed">*</span>
-            </label>
-            <textarea id="observation" required rows="5" placeholder="Provide details regarding the observed hazards, system malfunctions, or deviations from standard procedures..."
-                class="bg-slate-950 border border-aviationBorder text-slate-200 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-aviationRed focus:border-transparent block w-full p-3 placeholder-slate-700 transition-all resize-y"></textarea>
-        </div>
+                <!-- Drag & Drop Mock Box -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Attachments
+                    </label>
+                    <!-- Drag-drop zone optimized with bg-aviationCard/30 background -->
+                    <div
+                        class="border border-dashed border-aviationBorder hover:border-aviationRed/40 rounded-lg bg-aviationCard/30 p-4 text-center cursor-pointer transition-colors group">
+                        <input type="file" id="fileAttachment" class="hidden">
+                        <label for="fileAttachment" class="cursor-pointer">
+                            <i
+                                class="fa-solid fa-cloud-arrow-up text-xl text-slate-600 group-hover:text-aviationRed transition-colors mb-1 block"></i>
+                            <span class="text-xs font-semibold text-slate-300 block">Drop operational logs or cockpit
+                                media here</span>
+                            <span class="text-[10px] text-slate-500 block">Max file size: 50 MB</span>
+                        </label>
+                    </div>
+                </div>
 
-        <!-- Drag & Drop Mock Box -->
-        <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                Attachments
-            </label>
-            <div class="border border-dashed border-aviationBorder hover:border-aviationRed/40 rounded-lg bg-slate-950/50 p-4 text-center cursor-pointer transition-colors group">
-                <input type="file" id="fileAttachment" class="hidden">
-                <label for="fileAttachment" class="cursor-pointer">
-                    <i class="fa-solid fa-cloud-arrow-up text-xl text-slate-600 group-hover:text-aviationRed transition-colors mb-1 block"></i>
-                    <span class="text-xs font-semibold text-slate-300 block">Drop operational logs or cockpit media here</span>
-                    <span class="text-[10px] text-slate-500 block">Max file size: 50 MB</span>
-                </label>
-            </div>
-        </div>
+                <!-- Action Buttons -->
+                <div class="pt-4 border-t border-aviationBorder flex justify-end gap-2.5">
+                    <a href="#/safety"
+                        class="px-4 py-2 rounded-lg border border-aviationBorder text-slate-400 hover:text-white hover:bg-slate-800 font-semibold text-center text-xs transition-colors">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                        class="px-5 py-2 rounded-lg bg-aviationRed hover:bg-rose-700 text-white font-bold text-center text-xs shadow-md shadow-rose-950/20 transition-colors flex items-center justify-center">
+                        <i class="fa-solid fa-paper-plane mr-1.5"></i> File Report
+                    </button>
+                </div>
 
-        <!-- Action Buttons -->
-        <div class="pt-4 border-t border-aviationBorder flex justify-end gap-2.5">
-            <a href="#/safety" class="px-4 py-2 rounded-lg border border-aviationBorder text-slate-400 hover:text-white hover:bg-slate-800 font-semibold text-center text-xs transition-colors">
-                Cancel
-            </a>
-            <button type="submit" class="px-5 py-2 rounded-lg bg-aviationRed hover:bg-rose-700 text-white font-bold text-center text-xs shadow-md shadow-rose-950/20 transition-colors flex items-center justify-center">
-                <i class="fa-solid fa-paper-plane mr-1.5"></i> File Report
-            </button>
+            </form>
         </div>
-
-    </form>
+    </div>
 </div>

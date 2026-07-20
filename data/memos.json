@@ -1,0 +1,56 @@
+[
+    {
+        "id": "FOB-2026-02",
+        "title": "FOB 2026-02 - Q400 Operational Approval for Rainbow Lake",
+        "pdfName": "2._fob_2026-02_q400_operational_approval_for_rainbow_lake.pdf",
+        "publishedBy": "Chief Pilot, Conair Fleet Operations",
+        "modifiedDate": "2 months ago",
+        "acknowledged": false,
+        "acknowledgedDate": null,
+        "groups": [
+            "Q400 Air Tanker Crews",
+            "Flight Ops Management"
+        ],
+        "assignedUser": "Luke (Captain)"
+    },
+    {
+        "id": "FOB-2026-04",
+        "title": "FOB 2026-04 - Retardant Drop Drift Threshold Adjustments",
+        "pdfName": "4._fob_2026-04_drop_drift_and_wind_thresholds.pdf",
+        "publishedBy": "Safety Director",
+        "modifiedDate": "3 weeks ago",
+        "acknowledged": false,
+        "acknowledgedDate": null,
+        "groups": [
+            "All Flight Crews",
+            "Conair Safety Committee"
+        ],
+        "assignedUser": "Luke (Captain)"
+    },
+    {
+        "id": "FOB-2026-05",
+        "title": "FOB 2026-05 - Cataract Creek Temporary Flight Restricted Airspace (TFR)",
+        "pdfName": "5._fob_2026-05_cataract_creek_tfr_boundaries.pdf",
+        "publishedBy": "Nav Canada / Air Traffic Ops",
+        "modifiedDate": "5 days ago",
+        "acknowledged": false,
+        "acknowledgedDate": null,
+        "groups": [
+            "All Alberta Wildfire Assets"
+        ],
+        "assignedUser": "Luke (Captain)"
+    },
+    {
+        "id": "FOB-2026-01",
+        "title": "FOB 2026-01 - Pre-Season Checklists and Engine Run-Up Protocols",
+        "pdfName": "1._fob_2026-01_preseason_run_up_q400.pdf",
+        "publishedBy": "Chief Training Captain",
+        "modifiedDate": "4 months ago",
+        "acknowledged": true,
+        "acknowledgedDate": "2026-03-12 14:32 MST",
+        "groups": [
+            "All Flight Crews"
+        ],
+        "assignedUser": "Luke (Captain)"
+    }
+]

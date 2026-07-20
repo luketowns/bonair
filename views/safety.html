@@ -5,70 +5,236 @@
         <span class="text-slate-200 font-semibold">Safety Management System</span>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
-        <div class="lg:col-span-4 space-y-4">
-            <div class="bg-aviationCard border border-aviationBorder rounded-xl p-5 shadow-lg">
-                <div class="mb-4">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-aviationRed font-mono">SMS Framework</h2>
-                    <p class="text-lg font-extrabold text-white">Safety Modules</p>
+    <!-- Parent Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start transition-all duration-300 ease-in-out">
+
+        <!-- Left Side: Navigation Column (added custom transitions) -->
+        <div id="sms-nav-col"
+            class="lg:col-span-4 w-full space-y-4 transition-all duration-300 ease-in-out origin-left">
+            <div id="sms-nav-card"
+                class="bg-aviationCard border border-aviationBorder rounded-xl p-5 shadow-lg relative overflow-hidden transition-all duration-300">
+
+                <!-- Card Header with Toggle Button -->
+                <div class="mb-4 flex items-center justify-between sms-header-row">
+                    <div class="sms-header-text transition-opacity duration-200">
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-aviationRed font-mono">SMS Framework
+                        </h2>
+                        <p class="text-lg font-extrabold text-white">Safety Modules</p>
+                    </div>
+                    <!-- Collapse Toggle Button -->
+                    <button onclick="window.toggleSMSNav()"
+                        class="p-2 rounded-lg bg-slate-900 border border-aviationBorder hover:border-slate-700 text-slate-400 hover:text-white transition-all focus:outline-none shrink-0"
+                        title="Collapse Menu">
+                        <i id="sms-collapse-icon"
+                            class="fa-solid fa-chevron-left text-xs transition-transform duration-300"></i>
+                    </button>
                 </div>
-                
+
                 <nav class="space-y-2.5">
+                    <!-- Create New Report -->
                     <a href="#/safety/create" id="nav-safety-create"
-                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
-                        <div class="flex items-center space-x-3">
-                            <div class="h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors">
+                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group sms-nav-link">
+                        <div class="flex items-center space-x-3 min-w-0 sms-nav-content">
+                            <div
+                                class="sms-icon-container h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors shrink-0">
                                 <i class="fa-solid fa-file-shield"></i>
                             </div>
-                            <div class="text-left">
-                                <p class="text-sm font-bold">Create New Report</p>
-                                <p class="text-xs text-slate-500">File a hazard or incident</p>
+                            <div class="text-left sms-nav-label transition-opacity duration-200 overflow-hidden">
+                                <p class="text-sm font-bold truncate">Create New Report</p>
+                                <p class="text-xs text-slate-500 truncate">File a hazard or incident</p>
                             </div>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
+                        <i
+                            class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform sms-nav-arrow"></i>
                     </a>
 
+                    <!-- View Reports -->
                     <a href="#/safety/view" id="nav-safety-view"
-                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
-                        <div class="flex items-center space-x-3">
-                            <div class="h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors">
+                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group sms-nav-link">
+                        <div class="flex items-center space-x-3 min-w-0 sms-nav-content">
+                            <div
+                                class="sms-icon-container h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors shrink-0">
                                 <i class="fa-solid fa-list-check"></i>
                             </div>
-                            <div class="text-left">
-                                <p class="text-sm font-bold">View Reports</p>
-                                <p class="text-xs text-slate-500">Track filed logs & statuses</p>
+                            <div class="text-left sms-nav-label transition-opacity duration-200 overflow-hidden">
+                                <p class="text-sm font-bold truncate">View Reports</p>
+                                <p class="text-xs text-slate-500 truncate">Track filed logs & statuses</p>
                             </div>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
+                        <i
+                            class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform sms-nav-arrow"></i>
                     </a>
 
+                    <!-- Memos -->
                     <a href="#/safety/memos" id="nav-safety-memos"
-                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group">
-                        <div class="flex items-center space-x-3">
-                            <div class="h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors">
+                        class="flex items-center justify-between p-4 rounded-lg bg-slate-900 border border-aviationBorder hover:border-aviationRed/50 text-slate-300 hover:text-white transition-all group sms-nav-link">
+                        <div class="flex items-center space-x-3 min-w-0 sms-nav-content">
+                            <div
+                                class="sms-icon-container h-9 w-9 rounded-md bg-rose-500/10 flex items-center justify-center text-aviationRed border border-rose-500/20 group-hover:bg-aviationRed group-hover:text-white transition-colors shrink-0">
                                 <i class="fa-solid fa-bullhorn"></i>
                             </div>
-                            <div class="text-left">
-                                <p class="text-sm font-bold">Memos</p>
-                                <p class="text-xs text-slate-500">Flight safety directives</p>
+                            <div class="text-left sms-nav-label transition-opacity duration-200 overflow-hidden">
+                                <p class="text-sm font-bold truncate">Memos</p>
+                                <p class="text-xs text-slate-500 truncate">Flight safety directives</p>
                             </div>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform"></i>
+                        <i
+                            class="fa-solid fa-chevron-right text-xs text-slate-600 group-hover:translate-x-1 transition-transform sms-nav-arrow"></i>
                     </a>
                 </nav>
             </div>
         </div>
 
-        <div id="safety-detail-pane" class="lg:col-span-8 min-h-[450px] transition-all duration-150">
-            <div class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
-                <div class="h-16 w-16 rounded-full bg-slate-900 flex items-center justify-center border border-aviationBorder mb-4 shadow-inner">
+        <!-- Right Side: Selected Module View Details Pane -->
+        <div id="safety-detail-pane" class="lg:col-span-8 min-h-[450px] transition-all duration-300 ease-in-out">
+            <div
+                class="bg-aviationCard/30 border border-dashed border-aviationBorder rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[450px]">
+                <div
+                    class="h-16 w-16 rounded-full bg-slate-900 flex items-center justify-center border border-aviationBorder mb-4 shadow-inner">
                     <i class="fa-solid fa-arrow-pointer text-slate-500 text-xl animate-bounce"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-300">No Module Selected</h3>
-                <p class="text-sm text-slate-500 mt-1.5 max-w-sm">Select a safety framework module from the panel on the left to display its interactive layout.</p>
+                <p class="text-sm text-slate-500 mt-1.5 max-w-sm">Select a safety framework module from the panel on the
+                    left to display its interactive layout.</p>
             </div>
         </div>
 
     </div>
 </div>
+
+<script>
+    (function () {
+        window.toggleSMSNav = function () {
+            const navCol = document.getElementById('sms-nav-col');
+            const navCard = document.getElementById('sms-nav-card');
+            const detailPane = document.getElementById('safety-detail-pane');
+            const collapseIcon = document.getElementById('sms-collapse-icon');
+
+            if (!navCol || !detailPane) return;
+
+            const isCollapsed = navCol.classList.contains('sms-collapsed-layout');
+
+            if (isCollapsed) {
+                // Expand Navigation
+                navCol.classList.remove('sms-collapsed-layout');
+                navCol.classList.add('lg:col-span-4');
+
+                navCard.classList.remove('sms-card-collapsed');
+
+                detailPane.classList.remove('lg:col-span-11', 'sms-detail-expanded');
+                detailPane.classList.add('lg:col-span-8');
+
+                if (collapseIcon) {
+                    collapseIcon.classList.remove('rotate-180');
+                }
+
+                localStorage.setItem('smsSidebarCollapsed', 'false');
+            } else {
+                // Collapse Navigation
+                navCol.classList.remove('lg:col-span-4');
+                navCol.classList.add('sms-collapsed-layout');
+
+                navCard.classList.add('sms-card-collapsed');
+
+                detailPane.classList.remove('lg:col-span-8');
+                detailPane.classList.add('lg:col-span-11', 'sms-detail-expanded');
+
+                if (collapseIcon) {
+                    collapseIcon.classList.add('rotate-180');
+                }
+
+                localStorage.setItem('smsSidebarCollapsed', 'true');
+            }
+        };
+
+        // Auto-restore state on render
+        setTimeout(() => {
+            const wasCollapsed = localStorage.getItem('smsSidebarCollapsed') === 'true';
+            if (wasCollapsed) {
+                const navCol = document.getElementById('sms-nav-col');
+                const navCard = document.getElementById('sms-nav-card');
+                const detailPane = document.getElementById('safety-detail-pane');
+                const collapseIcon = document.getElementById('sms-collapse-icon');
+
+                if (navCol && detailPane) {
+                    navCol.classList.remove('lg:col-span-4');
+                    navCol.classList.add('sms-collapsed-layout');
+                    if (navCard) navCard.classList.add('sms-card-collapsed');
+
+                    detailPane.classList.remove('lg:col-span-8');
+                    detailPane.classList.add('lg:col-span-11', 'sms-detail-expanded');
+
+                    if (collapseIcon) {
+                        collapseIcon.classList.add('rotate-180');
+                    }
+                }
+            }
+        }, 0);
+    })();
+</script>
+
+<style>
+    /* Desktop layout overrides when collapsed */
+    @media (min-width: 1024px) {
+        .sms-collapsed-layout {
+            grid-column: span 1 / span 1 !important;
+            width: 80px !important;
+            min-width: 80px !important;
+        }
+
+        .sms-detail-expanded {
+            grid-column: span 11 / span 11 !important;
+            width: calc(100% + (100% / 12) - 80px) !important;
+        }
+    }
+
+    /* Fading rules for text content inside navigation elements */
+    .sms-collapsed-layout .sms-header-text,
+    .sms-collapsed-layout .sms-nav-label,
+    .sms-collapsed-layout .sms-nav-arrow {
+        opacity: 0;
+        pointer-events: none;
+        width: 0px !important;
+        display: none !important;
+    }
+
+    /* Minimize padding inside card on collapse to prevent overflow squishing */
+    .sms-card-collapsed {
+        padding: 1.25rem 0.75rem !important;
+    }
+
+    /* Keep the header toggle centered when collapsed */
+    .sms-collapsed-layout .sms-header-row {
+        justify-content: center !important;
+    }
+
+    /* Align nav link container content to the center */
+    .sms-collapsed-layout .sms-nav-content {
+        width: 100% !important;
+        justify-content: center !important;
+        margin: 0 !important;
+    }
+
+    /* Smooth anchor links transitions & custom equal hover padding wrapper */
+    .sms-collapsed-layout .sms-nav-link {
+        justify-content: center !important;
+        padding: 0 !important;
+        /* Resets default 1rem vertical padding */
+        width: 44px !important;
+        height: 44px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        border-radius: 9999px !important;
+        /* Perfect circular hover button background */
+    }
+
+    /* Keeps the inner icon perfectly proportioned */
+    .sms-collapsed-layout .sms-icon-container {
+        border-radius: 9999px !important;
+        /* Circles inside circles */
+        width: 36px !important;
+        height: 36px !important;
+        border: none !important;
+        /* Clean appearance on collapse */
+    }
+</style>

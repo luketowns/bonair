@@ -1,0 +1,419 @@
+<!-- Main Timesheet Container -->
+<div class="space-y-6">
+    <!-- Header Summary Block -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">Duty Timesheet & Flight Log</h1>
+            <p class="text-slate-400 mt-1">Track daily flight operations, crew duty limits, and log flight metrics.</p>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="saveDraft()"
+                class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-aviationBorder px-4 py-2 rounded-lg font-semibold text-sm transition-colors">
+                <i class="fa-solid fa-floppy-disk mr-2"></i>Save Draft
+            </button>
+            <button onclick="submitTimesheet()"
+                class="bg-aviationRed hover:bg-rose-700 text-white px-5 py-2 rounded-lg font-semibold text-sm transition-colors shadow-md">
+                <i class="fa-solid fa-paper-plane mr-2"></i>Submit Sheet
+            </button>
+        </div>
+    </div>
+
+    <!-- Calculated Summary Cards (Top Row - Read Only) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-aviationCard border border-aviationBorder rounded-xl p-5 shadow-lg">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Calculated Duty</p>
+            <p id="total-duty-display" class="text-3xl font-black text-rose-500 mt-1">0.0 <span
+                    class="text-sm font-normal text-slate-400">hrs</span></p>
+            <p class="text-xs text-slate-500 mt-1">Calculated from Split Duty shifts below</p>
+        </div>
+        <div class="bg-aviationCard border border-aviationBorder rounded-xl p-5 shadow-lg">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Flight Hours</p>
+            <p id="total-flight-display" class="text-3xl font-black text-blue-400 mt-1">0.0 <span
+                    class="text-sm font-normal text-slate-400">hrs</span></p>
+            <p class="text-xs text-slate-500 mt-1">Sum of Day + Night flight legs below</p>
+        </div>
+        <div class="bg-aviationCard border border-aviationBorder rounded-xl p-5 shadow-lg">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Aircraft Drops Total</p>
+            <p id="total-drops-display" class="text-3xl font-black text-amber-500 mt-1">0 <span
+                    class="text-sm font-normal text-slate-400">drops</span></p>
+            <p class="text-xs text-slate-500 mt-1">Total active fire drops logged today</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- LEFT PANEL: Duty Split Shift and Location details -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-aviationCard border border-aviationBorder rounded-xl p-6 shadow-lg space-y-5">
+                <h2 class="text-lg font-bold text-white border-b border-slate-700 pb-3 flex items-center">
+                    <i class="fa-solid fa-clock text-aviationRed mr-2"></i>Duty Period Logging
+                </h2>
+
+                <!-- Date and Shift Type -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label
+                            class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Date</label>
+                        <input type="date" id="duty-date"
+                            class="w-full bg-slate-900 border border-aviationBorder rounded px-3 py-2 text-white focus:outline-none focus:border-aviationRed text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Shift
+                            Type</label>
+                        <select id="shift-type"
+                            class="w-full bg-slate-900 border border-aviationBorder rounded px-3 py-2 text-white focus:outline-none focus:border-aviationRed text-sm">
+                            <option value="FD">FD - Flight Duty</option>
+                            <option value="A">A - Administration</option>
+                            <option value="NRFD">NRFD - No Report for Flight Duty</option>
+                            <option value="SL">SL - Sick Leave</option>
+                            <option value="T">T - Training</option>
+                            <option value="TFFD">TFFD - Time Free From Flight Duty</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Duty Split Shift (Set 1 and Set 2) -->
+                <div class="space-y-4 pt-2">
+                    <div class="bg-slate-900/60 p-3.5 rounded-lg border border-slate-800">
+                        <span class="text-xs font-bold text-rose-400 uppercase tracking-wider block mb-2">Duty Shift
+                            1</span>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Start
+                                    Time (Local)</label>
+                                <input type="time" id="duty1-start" oninput="calculateTotalDuty()"
+                                    class="w-full bg-slate-950 border border-aviationBorder rounded px-2.5 py-1.5 text-white focus:outline-none focus:border-aviationRed text-xs">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">End
+                                    Time (Local)</label>
+                                <input type="time" id="duty1-end" oninput="calculateTotalDuty()"
+                                    class="w-full bg-slate-950 border border-aviationBorder rounded px-2.5 py-1.5 text-white focus:outline-none focus:border-aviationRed text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 p-3.5 rounded-lg border border-slate-800">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Duty Shift 2
+                                (Split)</span>
+                            <span class="text-[10px] text-slate-500 italic">Optional</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Start
+                                    Time (Local)</label>
+                                <input type="time" id="duty2-start" oninput="calculateTotalDuty()"
+                                    class="w-full bg-slate-950 border border-aviationBorder rounded px-2.5 py-1.5 text-white focus:outline-none focus:border-aviationRed text-xs">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">End
+                                    Time (Local)</label>
+                                <input type="time" id="duty2-end" oninput="calculateTotalDuty()"
+                                    class="w-full bg-slate-950 border border-aviationBorder rounded px-2.5 py-1.5 text-white focus:outline-none focus:border-aviationRed text-xs">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overnight Station & Per Diem Requirements -->
+                <div class="border-t border-slate-800 pt-4">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Remain Over
+                        Night (RON) Station</label>
+                    <input type="text" id="ron-location" placeholder="e.g. Kamloops (YKA), Hotel Accent"
+                        class="w-full bg-slate-900 border border-aviationBorder rounded px-3 py-2 text-white focus:outline-none focus:border-aviationRed text-sm placeholder-slate-600">
+                    <span class="text-[10px] text-slate-500 mt-1 block">Specify base, hotel, or staging base to ensure
+                        correct per diem processing.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: Flight Legs/Mission Log (Fills natural height) -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-aviationCard border border-aviationBorder rounded-xl p-6 shadow-lg">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-3 mb-5">
+                    <h2 class="text-lg font-bold text-white flex items-center">
+                        <i class="fa-solid fa-plane-departure text-aviationRed mr-2"></i>Flight Log & Mission Segments
+                    </h2>
+                    <button onclick="addFlightLeg()"
+                        class="bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-aviationBorder px-3 py-1.5 rounded-lg transition-colors flex items-center">
+                        <i class="fa-solid fa-plus mr-1"></i> Add Flight Leg
+                    </button>
+                </div>
+
+                <!-- Flight Legs Dynamic Container -->
+                <div id="flight-legs-container" class="space-y-4">
+                    <!-- Dynamic entries will be inserted here. If none, fall back to empty placeholder below -->
+                </div>
+
+                <div id="no-legs-placeholder"
+                    class="py-12 text-center border border-dashed border-slate-800 rounded-xl">
+                    <i class="fa-solid fa-route text-slate-600 text-3xl mb-2"></i>
+                    <p class="text-sm text-slate-400">No flight legs logged for this duty period.</p>
+                    <button onclick="addFlightLeg()"
+                        class="mt-3 inline-block text-xs bg-aviationRed text-white px-3 py-1.5 rounded font-semibold hover:bg-rose-700 transition-colors">Log
+                        First Flight Leg</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- INLINE INTERACTIVE ROUTING LOGIC & SUM CALCULATORS -->
+<script>
+    // Initialize current date on UI mount
+    document.getElementById('duty-date').valueAsDate = new Date();
+
+    // Flight Leg Tracking Database
+    let flightLegs = [];
+
+    // Adds an empty flight leg model to the state and renders it
+    function addFlightLeg() {
+        const uniqueId = 'leg_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const newLeg = {
+            id: uniqueId,
+            acReg: '',
+            picDay: 0, picNight: 0,
+            sicDay: 0, sicNight: 0,
+            takeoffsDay: 0, landingsDay: 0,
+            takeoffsNight: 0, landingsNight: 0,
+            loads: 0, drops: 0,
+            simInst: 0, flightInst: 0,
+            icusDay: 0, icusNight: 0,
+            dualDay: 0, dualNight: 0,
+            ifrApproaches: 0, rnavApproaches: 0
+        };
+
+        flightLegs.push(newLeg);
+        renderFlightLegs();
+        calculateFlightLegMetrics();
+    }
+
+    // Removes a flight leg entry
+    function removeFlightLeg(id) {
+        flightLegs = flightLegs.filter(leg => leg.id !== id);
+        renderFlightLegs();
+        calculateFlightLegMetrics();
+    }
+
+    // Captures realtime typing inputs directly back into state data
+    function updateLegValue(id, field, value) {
+        const target = flightLegs.find(leg => leg.id === id);
+        if (target) {
+            if (field === 'acReg') {
+                target[field] = value;
+            } else {
+                target[field] = parseFloat(value) || 0;
+            }
+        }
+        calculateFlightLegMetrics();
+    }
+
+    // Renders the UI cards for all legs in current array
+    function renderFlightLegs() {
+        const container = document.getElementById('flight-legs-container');
+        const placeholder = document.getElementById('no-legs-placeholder');
+
+        if (flightLegs.length === 0) {
+            container.innerHTML = '';
+            placeholder.classList.remove('hidden');
+            return;
+        }
+
+        placeholder.classList.add('hidden');
+
+        container.innerHTML = flightLegs.map((leg, idx) => `
+            <div class="bg-slate-900/80 border border-aviationBorder rounded-xl p-5 space-y-4 transition-all hover:border-slate-600 relative">
+                <!-- Header of single Flight Leg Card -->
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Flight Leg #${idx + 1}</span>
+                    <button onclick="removeFlightLeg('${leg.id}')" class="text-slate-500 hover:text-aviationRed transition-colors" title="Delete Leg">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Data Inputs Layout Split by logical flight operations -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Registration and IFR Approach tracking -->
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">A/C Registration</label>
+                            <input type="text" value="${leg.acReg}" oninput="updateLegValue('${leg.id}', 'acReg', this.value)" placeholder="e.g. C-FKAD" class="w-full bg-slate-950 border border-aviationBorder rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-aviationRed font-semibold uppercase">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">IFR Approaches</label>
+                            <input type="number" step="1" min="0" value="${leg.ifrApproaches}" oninput="updateLegValue('${leg.id}', 'ifrApproaches', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-aviationRed">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">RNAV Approaches</label>
+                            <input type="number" step="1" min="0" value="${leg.rnavApproaches}" oninput="updateLegValue('${leg.id}', 'rnavApproaches', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-aviationRed">
+                        </div>
+                    </div>
+
+                    <!-- PIC & SIC Flight Time Trackers -->
+                    <div class="space-y-3 bg-slate-950/40 p-3 rounded-lg border border-slate-800/60">
+                        <span class="text-[10px] font-black uppercase text-blue-400 tracking-wider block border-b border-slate-800 pb-1">Pilot Hours (Hours)</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">PIC Day</label>
+                                <input type="number" step="0.1" min="0" value="${leg.picDay}" oninput="updateLegValue('${leg.id}', 'picDay', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">PIC Night</label>
+                                <input type="number" step="0.1" min="0" value="${leg.picNight}" oninput="updateLegValue('${leg.id}', 'picNight', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">SIC Day</label>
+                                <input type="number" step="0.1" min="0" value="${leg.sicDay}" oninput="updateLegValue('${leg.id}', 'sicDay', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">SIC Night</label>
+                                <input type="number" step="0.1" min="0" value="${leg.sicNight}" oninput="updateLegValue('${leg.id}', 'sicNight', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Landings, Takeoffs & Fire Missions -->
+                    <div class="space-y-3 bg-slate-950/40 p-3 rounded-lg border border-slate-800/60">
+                        <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider block border-b border-slate-800 pb-1">Takeoffs / Landings</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Takeoffs (D)</label>
+                                <input type="number" step="1" min="0" value="${leg.takeoffsDay}" oninput="updateLegValue('${leg.id}', 'takeoffsDay', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Landings (D)</label>
+                                <input type="number" step="1" min="0" value="${leg.landingsDay}" oninput="updateLegValue('${leg.id}', 'landingsDay', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Takeoffs (N)</label>
+                                <input type="number" step="1" min="0" value="${leg.takeoffsNight}" oninput="updateLegValue('${leg.id}', 'takeoffsNight', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Landings (N)</label>
+                                <input type="number" step="1" min="0" value="${leg.landingsNight}" oninput="updateLegValue('${leg.id}', 'landingsNight', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 border-t border-slate-800/80 pt-2">
+                            <div>
+                                <label class="block text-[9px] text-slate-400 font-bold uppercase">Loads</label>
+                                <input type="number" step="1" min="0" value="${leg.loads}" oninput="updateLegValue('${leg.id}', 'loads', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-400 font-bold uppercase">Drops</label>
+                                <input type="number" step="1" min="0" value="${leg.drops}" oninput="updateLegValue('${leg.id}', 'drops', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Training/Instrument/Dual Trackers -->
+                    <div class="space-y-3 bg-slate-950/40 p-3 rounded-lg border border-slate-800/60">
+                        <span class="text-[10px] font-black uppercase text-purple-400 tracking-wider block border-b border-slate-800 pb-1">Instrument & Training</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Sim Inst</label>
+                                <input type="number" step="0.1" min="0" value="${leg.simInst}" oninput="updateLegValue('${leg.id}', 'simInst', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Flight Inst</label>
+                                <input type="number" step="0.1" min="0" value="${leg.flightInst}" oninput="updateLegValue('${leg.id}', 'flightInst', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">ICUS D</label>
+                                <input type="number" step="0.1" min="0" value="${leg.icusDay}" oninput="updateLegValue('${leg.id}', 'icusDay', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">ICUS N</label>
+                                <input type="number" step="0.1" min="0" value="${leg.icusNight}" oninput="updateLegValue('${leg.id}', 'icusNight', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Dual D</label>
+                                <input type="number" step="0.1" min="0" value="${leg.dualDay}" oninput="updateLegValue('${leg.id}', 'dualDay', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] text-slate-500 mb-0.5">Dual N</label>
+                                <input type="number" step="0.1" min="0" value="${leg.dualNight}" oninput="updateLegValue('${leg.id}', 'dualNight', this.value)" class="w-full bg-slate-950 border border-aviationBorder rounded p-1 text-xs text-white focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Mathematical Parsing logic for Split Shifts (Local Duty Hours)
+    function parseTimeToDecimal(timeStr) {
+        if (!timeStr) return 0;
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours + (minutes / 60);
+    }
+
+    function calculateTotalDuty() {
+        // Shift 1
+        const start1 = document.getElementById('duty1-start').value;
+        const end1 = document.getElementById('duty1-end').value;
+        let duty1Hours = 0;
+
+        if (start1 && end1) {
+            let t1 = parseTimeToDecimal(start1);
+            let t2 = parseTimeToDecimal(end1);
+            // Handle cross-midnight logs
+            if (t2 < t1) t2 += 24;
+            duty1Hours = t2 - t1;
+        }
+
+        // Shift 2 (Split)
+        const start2 = document.getElementById('duty2-start').value;
+        const end2 = document.getElementById('duty2-end').value;
+        let duty2Hours = 0;
+
+        if (start2 && end2) {
+            let t3 = parseTimeToDecimal(start2);
+            let t4 = parseTimeToDecimal(end2);
+            // Handle cross-midnight logs
+            if (t4 < t3) t4 += 24;
+            duty2Hours = t4 - t3;
+        }
+
+        const grandTotal = duty1Hours + duty2Hours;
+        document.getElementById('total-duty-display').innerHTML = `${grandTotal.toFixed(1)} <span class="text-sm font-normal text-slate-400">hrs</span>`;
+    }
+
+    // Calculates flight logs dynamically from current array objects
+    function calculateFlightLegMetrics() {
+        let totalFlightHrs = 0;
+        let totalDropsCount = 0;
+
+        flightLegs.forEach(leg => {
+            // Flight hours are calculated across all possible pilot roles (PIC/SIC/ICUS/Dual Day & Night)
+            const sumOfLeg =
+                leg.picDay + leg.picNight +
+                leg.sicDay + leg.sicNight +
+                leg.icusDay + leg.icusNight +
+                leg.dualDay + leg.dualNight;
+            totalFlightHrs += sumOfLeg;
+            totalDropsCount += leg.drops;
+        });
+
+        document.getElementById('total-flight-display').innerHTML = `${totalFlightHrs.toFixed(1)} <span class="text-sm font-normal text-slate-400">hrs</span>`;
+        document.getElementById('total-drops-display').innerHTML = `${totalDropsCount} <span class="text-sm font-normal text-slate-400">drops</span>`;
+    }
+
+    // UI Feedback for Save/Submit Actions
+    function saveDraft() {
+        alert("Timesheet draft saved successfully.");
+    }
+
+    function submitTimesheet() {
+        const confirmSubmission = confirm("Are you sure you want to lock and submit this timesheet?");
+        if (confirmSubmission) {
+            alert("Timesheet submitted to system dispatch!");
+        }
+    }
+
+    // Automatically load one initial empty log line for the pilot on mount
+    addFlightLeg();
+</script>
